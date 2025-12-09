@@ -1,0 +1,1434 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Huda | Authentic Islamic Knowledge</title>
+    
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- ICONS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- TAILWIND CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- TAILWIND CONFIG -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#10b981',   /* Emerald 500 */
+                        secondary: '#064e3b', /* Emerald 900 */
+                        gold: '#d97706',      /* Amber 600 */
+                        dark: '#1f2937',
+                        light: '#f9fafb'
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        arabic: ['Amiri', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #064e3b;
+        }
+
+        /* Arabic Text Optimization */
+        .arabic-text {
+            line-height: 2.4;
+            direction: rtl;
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Audio Player Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #10b981;
+            margin-top: -6px;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #d1d5db;
+            border-radius: 2px;
+        }
+
+        /* Modal Transitions */
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        body.modal-active {
+            overflow-x: hidden;
+            overflow-y: hidden !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300 font-sans flex flex-col min-h-screen">
+
+    <!-- ================= NAV BAR ================= -->
+    <nav class="sticky top-0 z-50 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm shadow-md transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center cursor-pointer" onclick="navigate('home')">
+                    <i class="fa-solid fa-kaaba text-3xl text-primary mr-2"></i>
+                    <span class="font-bold text-xl tracking-wide ml-2">Al-Huda</span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden lg:block">
+                    <div class="ml-10 flex items-baseline space-x-2">
+                        <button onclick="navigate('home')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:text-primary transition">Home</button>
+                        <button onclick="navigate('quran')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:text-primary transition">Quran</button>
+                        <button onclick="navigate('hadith')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:text-primary transition">Hadith</button>
+                        <button onclick="navigate('names')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:text-primary transition">99 Names</button>
+                        <button onclick="navigate('articles')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:text-primary transition">Articles</button>
+                        <button onclick="navigate('history')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:text-primary transition">History</button>
+                        <button onclick="navigate('duas')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:text-primary transition">Duas</button>
+                    </div>
+                </div>
+
+                <!-- Right Side Tools -->
+                <div class="flex items-center space-x-2 sm:space-x-4">
+                    <button onclick="toggleSearch()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                        <i class="fas fa-moon" id="theme-icon"></i>
+                    </button>
+                    <button onclick="toggleMobileMenu()" class="lg:hidden p-2 rounded-md">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 h-screen overflow-y-auto">
+            <div class="px-2 pt-2 pb-20 space-y-1 sm:px-3">
+                <button onclick="navigate('home')" class="block w-full text-left px-3 py-3 border-b dark:border-gray-700 font-medium">Home</button>
+                <button onclick="navigate('quran')" class="block w-full text-left px-3 py-3 border-b dark:border-gray-700 font-medium">Quran</button>
+                <button onclick="navigate('hadith')" class="block w-full text-left px-3 py-3 border-b dark:border-gray-700 font-medium">Hadith</button>
+                <button onclick="navigate('names')" class="block w-full text-left px-3 py-3 border-b dark:border-gray-700 font-medium">99 Names</button>
+                <button onclick="navigate('articles')" class="block w-full text-left px-3 py-3 border-b dark:border-gray-700 font-medium">Articles</button>
+                <button onclick="navigate('history')" class="block w-full text-left px-3 py-3 border-b dark:border-gray-700 font-medium">History</button>
+                <button onclick="navigate('duas')" class="block w-full text-left px-3 py-3 border-b dark:border-gray-700 font-medium">Duas</button>
+            </div>
+        </div>
+
+        <!-- Search Overlay -->
+        <div id="search-overlay" class="hidden absolute top-16 left-0 w-full bg-white dark:bg-gray-800 p-4 shadow-lg z-40 fade-in border-t dark:border-gray-700">
+            <div class="max-w-3xl mx-auto flex">
+                <input type="text" id="global-search" placeholder="Search Quran, Hadith, Topics, or Names of Allah..." class="flex-1 p-3 border rounded-l-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary text-gray-800 dark:text-gray-100">
+                <button onclick="performSearch()" class="bg-primary text-white px-6 py-3 rounded-r-md hover:bg-secondary transition">Search</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- SECTION: HOME -->
+        <section id="view-home" class="view-section fade-in">
+            <!-- Hero Card -->
+            <div class="relative bg-gradient-to-br from-emerald-500 to-teal-900 rounded-2xl p-8 md:p-16 text-center text-white shadow-2xl mb-12 overflow-hidden">
+                <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')]"></div>
+                <div class="relative z-10">
+                    <h1 class="text-4xl md:text-6xl font-bold font-arabic mb-6 leading-tight">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</h1>
+                    <p class="text-lg md:text-2xl font-light mb-8 max-w-2xl mx-auto">"And say: My Lord, increase me in knowledge." (Quran 20:114)</p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <button onclick="navigate('quran')" class="bg-white text-secondary px-8 py-4 rounded-full font-bold hover:bg-gray-100 transition shadow-lg transform hover:-translate-y-1">Read Quran</button>
+                        <button onclick="navigate('hadith')" class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-bold hover:bg-white hover:text-secondary transition shadow-lg transform hover:-translate-y-1">Explore Hadith</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Categories Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-xl transition cursor-pointer border-t-4 border-primary group" onclick="navigate('names')">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold group-hover:text-primary transition">99 Names</h3>
+                        <div class="p-3 bg-green-100 dark:bg-green-900 rounded-full text-primary"><i class="fas fa-star text-xl"></i></div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Learn Asma-ul-Husna with meanings and benefits.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-xl transition cursor-pointer border-t-4 border-gold group" onclick="navigate('duas')">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold group-hover:text-gold transition">Daily Adhkar</h3>
+                        <div class="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full text-gold"><i class="fas fa-hands-praying text-xl"></i></div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Fortress of the Muslim: Morning, Evening & Daily Duas.</p>
+                </div>
+                 <!-- Card 3 -->
+                 <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-xl transition cursor-pointer border-t-4 border-blue-500 group" onclick="navigate('articles')">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold group-hover:text-blue-500 transition">Knowledge</h3>
+                        <div class="p-3 bg-blue-100 dark:bg-blue-900 rounded-full text-blue-500"><i class="fas fa-book-reader text-xl"></i></div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Deep dive into Seerah, Fiqh, and Islamic Ethics.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-xl transition cursor-pointer border-t-4 border-purple-500 group" onclick="navigate('history')">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold group-hover:text-purple-500 transition">History</h3>
+                        <div class="p-3 bg-purple-100 dark:bg-purple-900 rounded-full text-purple-500"><i class="fas fa-landmark text-xl"></i></div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Interactive timeline of the Prophetic Era.</p>
+                </div>
+            </div>
+
+            <!-- Daily Reminder -->
+            <div class="mt-12 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 border-l-8 border-primary flex flex-col md:flex-row items-center gap-8">
+                <div class="md:w-3/4">
+                    <span class="uppercase tracking-widest text-xs font-bold text-primary mb-2 block">Reminder of the Day</span>
+                    <h2 class="text-2xl md:text-3xl font-arabic text-gray-800 dark:text-gray-100 mb-4 leading-relaxed">أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ</h2>
+                    <p class="text-lg text-gray-600 dark:text-gray-300 italic mb-2">"Unquestionably, by the remembrance of Allah do hearts find rest."</p>
+                    <span class="text-sm font-semibold text-gray-500">- Surah Ar-Ra'd (13:28)</span>
+                </div>
+                <div class="md:w-1/4 text-center">
+                    <button onclick="navigate('duas')" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-secondary transition w-full">View Tasbih</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: QURAN -->
+        <section id="view-quran" class="view-section hidden fade-in">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b dark:border-gray-700 pb-4">
+                <h2 class="text-3xl font-bold">The Noble Quran</h2>
+                <p class="text-sm text-gray-500 mt-2 md:mt-0">Featuring Key Surahs & Juz Amma</p>
+            </div>
+            
+            <!-- Audio Player Bar -->
+            <div id="audio-bar" class="hidden fixed bottom-0 left-0 w-full bg-white dark:bg-gray-800 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] p-4 z-50 flex flex-col md:flex-row items-center justify-between border-t dark:border-gray-700">
+                <div class="mb-2 md:mb-0 w-full md:w-1/4 text-center md:text-left">
+                    <p id="now-playing-title" class="font-bold text-sm text-primary">Surah Name</p>
+                    <p class="text-xs text-gray-500">Mishary Rashid Alafasy</p>
+                </div>
+                <audio id="quran-audio" controls class="w-full md:w-1/2 h-8"></audio>
+                <div class="w-full md:w-1/4 flex justify-end">
+                    <button onclick="closeAudio()" class="text-gray-500 hover:text-red-500 ml-4 p-2"><i class="fas fa-times text-xl"></i></button>
+                </div>
+            </div>
+
+            <div id="quran-container" class="grid grid-cols-1 gap-6">
+                <!-- Content injected via JS -->
+            </div>
+        </section>
+
+        <!-- SECTION: HADITH -->
+        <section id="view-hadith" class="view-section hidden fade-in">
+            <div class="mb-6">
+                <h2 class="text-3xl font-bold mb-2">Authentic Hadith Collections</h2>
+                <p class="text-gray-600 dark:text-gray-400">Featuring selected Hadiths from Bukhari, Muslim, and the 40 Hadith of Imam Nawawi.</p>
+            </div>
+            
+            <div class="flex flex-wrap gap-2 mb-6" id="hadith-filters">
+                <button onclick="filterHadith('all')" class="px-4 py-2 bg-primary text-white rounded-full text-sm hover:bg-secondary transition">All Collections</button>
+                <button onclick="filterHadith('40 Nawawi')" class="px-4 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-full text-sm shadow-sm hover:bg-gray-100 dark:hover:bg-gray-600 transition">40 Hadith Nawawi</button>
+                <button onclick="filterHadith('Sahih Bukhari')" class="px-4 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-full text-sm shadow-sm hover:bg-gray-100 dark:hover:bg-gray-600 transition">Sahih Bukhari</button>
+                <button onclick="filterHadith('Sahih Muslim')" class="px-4 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-full text-sm shadow-sm hover:bg-gray-100 dark:hover:bg-gray-600 transition">Sahih Muslim</button>
+            </div>
+            
+            <div id="hadith-container" class="space-y-6">
+                <!-- Content injected via JS -->
+            </div>
+        </section>
+
+        <!-- SECTION: NAMES OF ALLAH -->
+        <section id="view-names" class="view-section hidden fade-in">
+            <h2 class="text-3xl font-bold mb-6 border-b pb-2 dark:border-gray-700">Asma-ul-Husna (99 Names)</h2>
+            <div id="names-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <!-- Content injected via JS -->
+            </div>
+        </section>
+
+        <!-- SECTION: ARTICLES -->
+        <section id="view-articles" class="view-section hidden fade-in">
+            <h2 class="text-3xl font-bold mb-6 border-b pb-2 dark:border-gray-700">Islamic Knowledge Hub</h2>
+            <div id="articles-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Content injected via JS -->
+            </div>
+        </section>
+
+        <!-- SECTION: HISTORY -->
+        <section id="view-history" class="view-section hidden fade-in">
+            <h2 class="text-3xl font-bold mb-6 border-b pb-2 dark:border-gray-700">The Prophetic Timeline</h2>
+            <div class="relative border-l-4 border-primary ml-4 space-y-12 pl-8 py-4" id="history-container">
+                <!-- Content injected via JS -->
+            </div>
+        </section>
+
+        <!-- SECTION: DUAS -->
+        <section id="view-duas" class="view-section hidden fade-in">
+            <h2 class="text-3xl font-bold mb-6 border-b pb-2 dark:border-gray-700">Fortress of the Muslim</h2>
+            
+            <!-- Dua Categories -->
+            <div class="flex flex-wrap gap-2 mb-8">
+                <button onclick="filterDuas('all')" class="px-3 py-1 bg-primary text-white text-sm rounded hover:bg-secondary">All</button>
+                <button onclick="filterDuas('Morning/Evening')" class="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm rounded hover:bg-gray-300">Morning/Evening</button>
+                <button onclick="filterDuas('Prayer')" class="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm rounded hover:bg-gray-300">Prayer</button>
+                <button onclick="filterDuas('Protection')" class="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm rounded hover:bg-gray-300">Protection</button>
+            </div>
+
+            <div id="duas-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Content injected via JS -->
+            </div>
+        </section>
+        
+        <!-- SEARCH RESULTS -->
+        <section id="view-search" class="view-section hidden fade-in">
+            <h2 class="text-2xl font-bold mb-4">Search Results</h2>
+            <div id="search-results-container" class="space-y-4"></div>
+        </section>
+
+    </main>
+
+    <!-- ================= MODAL (FOR ARTICLES) ================= -->
+    <div id="article-modal" class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center z-[100]">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-75 backdrop-blur-sm"></div>
+        
+        <div class="modal-container bg-white dark:bg-gray-800 w-11/12 md:max-w-4xl mx-auto rounded-xl shadow-2xl z-50 overflow-y-auto max-h-[90vh] flex flex-col">
+            
+            <div class="modal-content py-6 px-8 flex-grow">
+                <!-- Title -->
+                <div class="flex justify-between items-start pb-4 border-b dark:border-gray-700 mb-4">
+                    <h2 class="text-2xl md:text-3xl font-bold text-primary" id="modal-title">Article Title</h2>
+                    <div class="modal-close cursor-pointer z-50 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition" onclick="toggleModal()">
+                        <i class="fas fa-times text-gray-500 hover:text-red-500 text-xl"></i>
+                    </div>
+                </div>
+
+                <!-- Body -->
+                <div>
+                    <img id="modal-image" src="" alt="" class="w-full h-64 md:h-80 object-cover rounded-xl mb-6 shadow-md">
+                    <div id="modal-body" class="text-gray-700 dark:text-gray-300 leading-8 text-lg space-y-6">
+                        <!-- Content -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="bg-gray-50 dark:bg-gray-900 px-8 py-4 border-t dark:border-gray-700 text-right">
+                <button onclick="toggleModal()" class="px-6 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600 transition">Close Reading</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-secondary text-white pt-16 pb-8">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <!-- Brand -->
+                <div class="col-span-1 md:col-span-1">
+                    <div class="flex items-center mb-6">
+                        <i class="fa-solid fa-kaaba text-3xl text-primary mr-3"></i>
+                        <span class="font-bold text-2xl">Al-Huda</span>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6">A comprehensive, open-source Islamic platform dedicated to authentic knowledge. Built for accessibility and ease of use.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="bg-white/10 w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary transition"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="bg-white/10 w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="bg-white/10 w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary transition"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <!-- Links -->
+                <div>
+                    <h4 class="font-bold mb-6 text-primary text-lg">Platform</h4>
+                    <ul class="space-y-3 text-sm text-gray-300">
+                        <li><a href="#" onclick="navigate('quran')" class="hover:text-white transition">Noble Quran</a></li>
+                        <li><a href="#" onclick="navigate('hadith')" class="hover:text-white transition">Sahih Hadith</a></li>
+                        <li><a href="#" onclick="navigate('names')" class="hover:text-white transition">99 Names of Allah</a></li>
+                        <li><a href="#" onclick="navigate('articles')" class="hover:text-white transition">Articles & Guides</a></li>
+                    </ul>
+                </div>
+                <!-- Support -->
+                <div>
+                    <h4 class="font-bold mb-6 text-primary text-lg">Tools</h4>
+                    <ul class="space-y-3 text-sm text-gray-300">
+                        <li><a href="#" onclick="navigate('duas')" class="hover:text-white transition">Daily Adhkar</a></li>
+                        <li><a href="#" onclick="navigate('history')" class="hover:text-white transition">Islamic Timeline</a></li>
+                        <li><a href="#" class="hover:text-white transition cursor-not-allowed opacity-50">Qibla Finder (Coming Soon)</a></li>
+                        <li><a href="#" class="hover:text-white transition cursor-not-allowed opacity-50">Prayer Times (Coming Soon)</a></li>
+                    </ul>
+                </div>
+                <!-- Newsletter -->
+                <div>
+                    <h4 class="font-bold mb-6 text-primary text-lg">Stay Updated</h4>
+                    <p class="text-gray-300 text-sm mb-4">Subscribe to receive daily verses and hadiths.</p>
+                    <div class="flex">
+                        <input type="email" placeholder="Your email" class="w-full px-4 py-2 rounded-l bg-white/10 border border-gray-600 focus:outline-none focus:border-primary text-white placeholder-gray-400">
+                        <button class="bg-primary px-4 py-2 rounded-r hover:bg-emerald-600 transition font-bold">GO</button>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-8 text-center text-sm text-gray-400">
+                <p>&copy; 2024 Al-Huda Platform. Content sourced from authentic narration.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+
+        // --- DATA SOURCE ---
+        // Expanded Data Structure
+        const siteData = {
+            quran: [
+                { id: 1, englishName: "Al-Fatiha", arabicName: "الفاتحة", meaning: "The Opener", verses: 7, type: "Meccan", audioUrl: "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/001.mp3", text: "بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ. ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ. ٱلرَّحْمَٰنِ ٱلرَّحِيمِ. مَٰلِكِ يَوْمِ ٱلدِّينِ. إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ. ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ. صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ", translation: "In the name of Allah, the Entirely Merciful, the Especially Merciful. [All] praise is [due] to Allah, Lord of the worlds. The Entirely Merciful, the Especially Merciful, Sovereign of the Day of Recompense. It is You we worship and You we ask for help. Guide us to the straight path - The path of those upon whom You have bestowed favor, not of those who have evoked [Your] anger or of those who are astray." },
+                { id: 18, englishName: "Al-Kahf (First 10)", arabicName: "الكهف", meaning: "The Cave", verses: 110, type: "Meccan", audioUrl: "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/018.mp3", text: "ٱلْحَمْدُ لِلَّهِ ٱلَّذِىٓ أَنزَلَ عَلَىٰ عَبْدِهِ ٱلْكِتَٰبَ وَلَمْ يَجْعَل لَّهُۥ عِوَجَا ۜ... (Recite full Surah for Friday blessings)", translation: "[All] praise is [due] to Allah, who has sent down upon His Servant the Book and has not made therein any deviance..." },
+                { id: 36, englishName: "Ya-Sin", arabicName: "يس", meaning: "Ya Sin", verses: 83, type: "Meccan", audioUrl: "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/036.mp3", text: "يس. وَٱلْقُرْءَانِ ٱلْحَكِيمِ. إِنَّكَ لَمِنَ ٱلْمُرْسَلِينَ. عَلَىٰ صِرَٰطٍ مُّسْتَقِيمٍ...", translation: "Ya, Sin. By the wise Qur'an. Indeed you, [O Muhammad], are from among the messengers, On a straight path..." },
+                { id: 55, englishName: "Ar-Rahman", arabicName: "الرحمن", meaning: "The Beneficent", verses: 78, type: "Medinan", audioUrl: "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/055.mp3", text: "ٱلرَّحْمَٰنُ. عَلَّمَ ٱلْقُرْءَانَ. خَلَقَ ٱلْإِنسَٰنَ. عَلَّمَهُ ٱلْبَيَانَ...", translation: "The Most Merciful. Taught the Qur'an. Created man, [and] taught him eloquence." },
+                { id: 56, englishName: "Al-Waqi'ah", arabicName: "الواقعة", meaning: "The Inevitable", verses: 96, type: "Meccan", audioUrl: "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/056.mp3", text: "إِذَا وَقَعَتِ ٱلْوَاقِعَةُ. لَيْسَ لِوَقْعَتِهَا كَاذِبَةٌ...", translation: "When the Occurrence occurs, There is, at its occurrence, no denial." },
+                { id: 67, englishName: "Al-Mulk", arabicName: "الملك", meaning: "The Sovereignty", verses: 30, type: "Meccan", audioUrl: "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/067.mp3", text: "تَبَارَكَ ٱلَّذِي بِيَدِهِ ٱلْمُلْكُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ...", translation: "Blessed is He in whose hand is dominion, and He is over all things competent..." },
+                { id: 93, englishName: "Ad-Duhaa", arabicName: "الضحى", meaning: "The Morning Hours", verses: 11, type: "Meccan", audioUrl: "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/093.mp3", text: "وَٱلضُّحَىٰ. وَٱلَّيْلِ إِذَا سَجَىٰ. مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ...", translation: "By the morning brightness And [by] the night when it covers with darkness, Your Lord has not taken leave of you, [O Muhammad], nor has He detested [you]." },
+                { id: 94, englishName: "Ash-Sharh", arabicName: "الشرح", meaning: "The Relief", verses: 8, type: "Meccan", audioUrl: "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/094.mp3", text: "أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ. وَوَضَعْنَا عَنكَ وِزْرَكَ...", translation: "Did We not expand for you, [O Muhammad], your breast? And We removed from you your burden..." },
+                { id: 97, englishName: "Al-Qadr", arabicName: "القدر", meaning: "The Power", verses: 5, type: "Meccan", audioUrl: "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/097.mp3", text: "إِنَّآ أَنزَلْنَٰهُ فِى لَيْلَةِ ٱلْقَدْرِ...", translation: "Indeed, We sent the Qur'an down during the Night of Decree." },
+                { id: 103, englishName: "Al-Asr", arabicName: "العصر", meaning: "The Declining Day", verses: 3, type: "Meccan", audioUrl: "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/103.mp3", text: "وَٱلْعَصْرِ. إِنَّ ٱلْإِنسَٰنَ لَفِى خُسْرٍ...", translation: "By time, Indeed, mankind is in loss, Except for those who have believed and done righteous deeds..." },
+                { id: 108, englishName: "Al-Kawthar", arabicName: "الكوثر", meaning: "The Abundance", verses: 3, type: "Meccan", audioUrl: "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/108.mp3", text: "إِنَّآ أَعْطَيْنَٰكَ ٱلْكَوْثَرَ. فَصَلِّ لِرَبِّكَ وَٱنْحَرْ. إِنَّ شَانِئَكَ هُوَ ٱلْأَبْتَرُ", translation: "Indeed, We have granted you, [O Muhammad], al-Kawthar. So pray to your Lord and sacrifice [to Him alone]. Indeed, your enemy is the one cut off." },
+                { id: 109, englishName: "Al-Kafirun", arabicName: "الكافرون", meaning: "The Disbelievers", verses: 6, type: "Meccan", audioUrl: "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/109.mp3", text: "قُلۡ یَـٰۤأَیُّهَا ٱلۡكَـٰفِرُونَ...", translation: "Say, 'O disbelievers, I do not worship what you worship...'" },
+                { id: 110, englishName: "An-Nasr", arabicName: "النصر", meaning: "The Divine Support", verses: 3, type: "Medinan", audioUrl: "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/110.mp3", text: "إِذَا جَآءَ نَصْرُ ٱللَّهِ وَٱلْفَتْحُ...", translation: "When the victory of Allah has come and the conquest..." },
+                { id: 112, englishName: "Al-Ikhlas", arabicName: "الإخلاص", meaning: "The Sincerity", verses: 4, type: "Meccan", audioUrl: "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/112.mp3", text: "قُلْ هُوَ ٱللَّهُ أَحَدٌ. ٱللَّهُ ٱلصَّمَدُ. لَمْ يَلِدْ وَلَمْ يُولَدْ. وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ", translation: "Say, 'He is Allah, [who is] One, Allah, the Eternal Refuge. He neither begets nor is born, Nor is there to Him any equivalent.'" },
+                { id: 113, englishName: "Al-Falaq", arabicName: "الفلق", meaning: "The Daybreak", verses: 5, type: "Meccan", audioUrl: "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/113.mp3", text: "قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ. مِن شَرِّ مَا خَلَقَ...", translation: "Say, 'I seek refuge in the Lord of daybreak From the evil of that which He created...'" },
+                { id: 114, englishName: "An-Nas", arabicName: "الناس", meaning: "The Mankind", verses: 6, type: "Meccan", audioUrl: "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/114.mp3", text: "قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ. مَلِكِ ٱلنَّاسِ. إِلَٰهِ ٱلنَّاسِ...", translation: "Say, 'I seek refuge in the Lord of mankind, The Sovereign of mankind, The God of mankind...'" }
+            ],
+            hadith: [
+    { source: "40 Nawawi", topic: "Intentions", arabic: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ", translation: "Actions are judged by intentions.", ref: "Hadith 1" },
+    { source: "40 Nawawi", topic: "Pillars of Islam", arabic: "بُنِيَ الإِسْلامُ عَلَى خَمْسٍ", translation: "Islam is built upon five [pillars]: testifying that there is no god but Allah...", ref: "Hadith 3" },
+    { source: "Sahih Bukhari", topic: "Qur'an", arabic: "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ", translation: "The best among you (Muslims) are those who learn the Qur'an and teach it.", ref: "Book 66, Hadith 49" },
+    { source: "Sahih Muslim", topic: "Charity", arabic: "مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ", translation: "Charity does not decrease wealth.", ref: "Book 32, Hadith 69" },
+    { source: "Sahih Bukhari", topic: "Speaking Good", arabic: "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ", translation: "Whoever believes in Allah and the Last Day should speak good or remain silent.", ref: "Book 78, Hadith 77" },
+    { source: "Sahih Muslim", topic: "Enjoining Good", arabic: "مَنْ رَأَى مِنْكُمْ مُنْكَرًا فَلْيُغَيِّرْهُ بِيَدِهِ، فَإِنْ لَمْ يَسْتَطِعْ فَبِلِسَانِهِ، فَإِنْ لَمْ يَسْتَطِعْ فَبِقَلْبِهِ", translation: "Whoever among you sees an evil, let him change it with his hand; if he cannot, then with his tongue; if he cannot, then with his heart...", ref: "Book 1, Hadith 78" },
+    { source: "40 Nawawi", topic: "Not Harming", arabic: "لاَ ضَرَرَ وَلاَ ضِرَارَ", translation: "There should be neither harming nor reciprocating harm.", ref: "Hadith 32" },
+    { source: "Sahih Bukhari", topic: "Family Rights", arabic: "خَيْرُكُمْ خَيْرُكُمْ لأَهْلِهِ وَأَنَا خَيْرُكُمْ لأَهْلِي", translation: "The best of you is he who is best to his family, and I am the best among you to my family.", ref: "Book 67, Hadith 52" },
+    { source: "Sahih Bukhari", topic: "Marriage", arabic: "تُنْكَحُ الْمَرْأَةُ لأَرْبَعٍ: لِمَالِهَا وَلِحَسَبِهَا وَجَمَالِهَا وَلِدِينِهَا، فَاظْفَرْ بِذَاتِ الدِّينِ تَرِبَتْ يَدَاكَ", translation: "A woman is married for four things: her wealth, her lineage, her beauty, and her religion. So choose the religious woman, and may your hands be dusted (i.e., be successful).", ref: "Book 67, Hadith 7" },
+    { source: "Sahih Muslim", topic: "Children", arabic: "إِذَا مَاتَ الإِنْسَانُ انْقَطَعَ عَمَلُهُ إِلاَّ مِنْ ثَلاَثٍ... أَوْ وَلَدٍ صَالِحٍ يَدْعُو لَهُ", translation: "When a person dies, all his deeds come to an end except for three... or a righteous son who will pray for him.", ref: "Book 20, Hadith 237" },
+    { source: "Sahih Muslim", topic: "Wife's Rights", arabic: "فَاتَّقُوا اللَّهَ فِي النِّسَاءِ فَإِنَّكُمْ أَخَذْتُمُوهُنَّ بِأَمَانِ اللَّهِ", translation: "Fear Allah with regard to women, for you have taken them with the trust of Allah.", ref: "Book 15, Hadith 121 (Part of Khutbah al-Wada')" },
+    { source: "Sahih Bukhari", topic: "Fostering", arabic: "أَنَا وَكَافِلُ الْيَتِيمِ فِي الْجَنَّةِ هَكَذَا", translation: "I and the guardian of the orphan will be in Paradise like this (holding up two fingers).", ref: "Book 78, Hadith 34" },
+    { source: "Sunan at-Tirmidhi", topic: "Daughters", arabic: "مَنِ ابْتُلِيَ مِنْ هَذِهِ الْبَنَاتِ بِشَيْءٍ فَأَحْسَنَ إِلَيْهِنَّ كُنَّ لَهُ سِتْرًا مِنَ النَّارِ", translation: "Whoever is tested with any of these daughters and treats them well, they will be a shield for him from the Fire.", ref: "Book 27, Hadith 1916" },
+    { source: "Sahih Muslim", topic: "Minor Signs", arabic: "لاَ تَقُومُ السَّاعَةُ حَتَّى يَكُونَ الْمَطَرُ قَيْظًا، وَتَسُودُ الشُّحُّ، وَتَكْثُرُ الْهَرْجُ", translation: "The Hour will not be established until rain becomes abundant, stinginess increases, and *Al-Harj* (killing) becomes frequent.", ref: "Book 54, Hadith 48" },
+    { source: "Sahih Bukhari", topic: "Major Signs", arabic: "ثَلاَثٌ إِذَا خَرَجْنَ لاَ يَنْفَعُ نَفْسًا إِيمَانُهَا لَمْ تَكُنْ آمَنَتْ مِنْ قَبْلُ: طُلُوعُ الشَّمْسِ مِنْ مَغْرِبِهَا وَالدَّجَّالُ وَدَابَّةُ الأَرْضِ", translation: "Three (signs) when they appear, the faith of a soul will not benefit it if it had not believed before: the sun rising from the west, the Dajjal (Anti-Christ), and the Beast of the earth.", ref: "Book 92, Hadith 32" },
+    { source: "Sahih Muslim", topic: "Warning", arabic: "بَادِرُوا بِالأَعْمَالِ فِتَنًا كَقِطَعِ اللَّيْلِ الْمُظْلِمِ", translation: "Hasten to do good deeds before the appearance of tribulations like parts of a dark night.", ref: "Book 1, Hadith 231" },
+    { source: "Sahih Bukhari", topic: "Gifts/Bribes", arabic: "هَدَايَا الْعُمَّالِ غُلُولٌ", translation: "Gifts given to officials are illegal gain (ghulul).", ref: "Book 56, Hadith 31" },
+    { source: "Sahih Muslim", topic: "Prohibition of Alcohol", arabic: "كُلُّ مُسْكِرٍ حَرَامٌ", translation: "Every intoxicant is forbidden (Haram).", ref: "Book 36, Hadith 1" },
+    { source: "40 Nawawi", topic: "Riba (Usury)", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ وَالْجُبْنِ وَالْهَرَمِ وَالْبُخْلِ", translation: "O Allah, I seek refuge with You from helplessness, laziness, cowardice, old age, and miserliness (and the punishment of the grave and the trials of life and death).", ref: "Hadith 37 (Part of a longer Du'a)" },
+    { source: "Sahih Bukhari", topic: "Rights of the Ruler", arabic: "اسْمَعُوا وَأَطِيعُوا وَإِنِ اسْتُعْمِلَ عَلَيْكُمْ عَبْدٌ حَبَشِيٌّ", translation: "Listen and obey, even if an Abyssinian slave is appointed over you.", ref: "Book 89, Hadith 1" },
+    { source: "Sahih Muslim", topic: "The Deceased", arabic: "لاَ تَسُبُّوا الأَمْوَاتَ فَإِنَّهُمْ قَدْ أَفْضَوْا إِلَى مَا قَدَّمُوا", translation: "Do not revile the dead, for they have gone on to meet what they sent ahead.", ref: "Book 40, Hadith 34" },
+    { source: "Sahih Bukhari", topic: "Hypocrisy/Outward Piety", arabic: "مَنْ لَبِسَ ثَوْبَ شُهْرَةٍ أَلْبَسَهُ اللَّهُ يَوْمَ الْقِيَامَةِ ثَوْبَ مَذَلَّةٍ", translation: "Whoever wears a garment of renown (in this world) to show off, Allah will clothe him in a garment of disgrace on the Day of Resurrection.", ref: "Ibn Majah 3607 (Meaning agreed upon, but widely cited)" },
+    { source: "Sahih Bukhari", topic: "Innovation/Sunnah", arabic: "فَعَلَيْكُمْ بِسُنَّتِي وَسُنَّةِ الْخُلَفَاءِ الرَّاشِدِينَ الْمَهْدِيِّينَ عَضُّوا عَلَيْهَا بِالنَّوَاجِذِ", translation: "Adhere to my Sunnah and the Sunnah of the Rightly-Guided Caliphs. Cling to it with your molars.", ref: "Book 89, Hadith 27 (Part of a longer narration)" }
+],
+              namesOfAllah: [
+    { "arabic": "الله", "english": "Allah", "meaning": "The One True God" },
+    { "arabic": "الرَّحْمَن", "english": "Ar-Rahman", "meaning": "The Entirely Merciful" },
+    { "arabic": "الرَّحِيم", "english": "Ar-Rahim", "meaning": "The Especially Merciful" },
+    { "arabic": "الْمَلِك", "english": "Al-Malik", "meaning": "The King" },
+    { "arabic": "الْقُدُّوس", "english": "Al-Quddus", "meaning": "The Sacred/Holy" },
+    { "arabic": "السَّلام", "english": "As-Salam", "meaning": "The Source of Peace" },
+    { "arabic": "الْمُؤْمِن", "english": "Al-Mu'min", "meaning": "The Guardian of Faith" },
+    { "arabic": "الْمُهَيْمِن", "english": "Al-Muhaymin", "meaning": "The Protector" },
+    { "arabic": "الْعَزِيز", "english": "Al-Aziz", "meaning": "The Mighty" },
+    { "arabic": "الْجَبَّار", "english": "Al-Jabbar", "meaning": "The Compeller" },
+    { "arabic": "الْمُتَكَبِّر", "english": "Al-Mutakabbir", "meaning": "The Majestic" },
+    { "arabic": "الْخَالِق", "english": "Al-Khaliq", "meaning": "The Creator" },
+    { "arabic": "الْبَارِئ", "english": "Al-Bari", "meaning": "The Evolver" },
+    { "arabic": "الْمُصَوِّر", "english": "Al-Musawwir", "meaning": "The Fashioner" },
+    { "arabic": "الْغَفَّار", "english": "Al-Ghaffar", "meaning": "The Repeatedly Forgiving" },
+    { "arabic": "الْقَهَّار", "english": "Al-Qahhar", "meaning": "The Subduer" },
+    { "arabic": "الْوَهَّاب", "english": "Al-Wahhab", "meaning": "The Bestower" },
+    { "arabic": "الرَّزَّاق", "english": "Ar-Razzaq", "meaning": "The Provider" },
+    { "arabic": "الْفَتَّاح", "english": "Al-Fattah", "meaning": "The Opener" },
+    { "arabic": "الْعَلِيم", "english": "Al-Alim", "meaning": "The All-Knowing" },
+    { "arabic": "الْقَابِض", "english": "Al-Qabid", "meaning": "The Constrictor" },
+    { "arabic": "الْبَاسِط", "english": "Al-Basit", "meaning": "The Expander" },
+    { "arabic": "الْخَافِض", "english": "Al-Khafid", "meaning": "The Abaser" },
+    { "arabic": "الرَّافِع", "english": "Ar-Rafi", "meaning": "The Exalter" },
+    { "arabic": "الْمُعِزّ", "english": "Al-Mu'izz", "meaning": "The Honorer" },
+    { "arabic": "الْمُذِلّ", "english": "Al-Mudhill", "meaning": "The Humiliator" },
+    { "arabic": "السَّمِيع", "english": "As-Sami", "meaning": "The All-Hearing" },
+    { "arabic": "الْبَصِير", "english": "Al-Basir", "meaning": "The All-Seeing" },
+    { "arabic": "الْحَكَم", "english": "Al-Hakam", "meaning": "The Judge" },
+    { "arabic": "الْعَدْل", "english": "Al-Adl", "meaning": "The Just" },
+    { "arabic": "اللَّطِيف", "english": "Al-Latif", "meaning": "The Subtle One" },
+    { "arabic": "الْخَبِير", "english": "Al-Khabir", "meaning": "The All-Aware" },
+    { "arabic": "الْحَلِيم", "english": "Al-Halim", "meaning": "The Forebearing" },
+    { "arabic": "الْعَظِيم", "english": "Al-Azim", "meaning": "The Magnificent" },
+    { "arabic": "الْغَفُور", "english": "Al-Ghafur", "meaning": "The All-Forgiving" },
+    { "arabic": "الشَّكُور", "english": "Ash-Shakur", "meaning": "The Appreciative" },
+    { "arabic": "الْعَلِيّ", "english": "Al-Ali", "meaning": "The Most High" },
+    { "arabic": "الْكَبِير", "english": "Al-Kabir", "meaning": "The Most Great" },
+    { "arabic": "الْحَفِيظ", "english": "Al-Hafiz", "meaning": "The Preserver" },
+    { "arabic": "الْمُقِيت", "english": "Al-Muqit", "meaning": "The Maintainer" },
+    { "arabic": "الْحَسِيب", "english": "Al-Hasib", "meaning": "The Reckoner" },
+    { "arabic": "الْجَلِيل", "english": "Al-Jalil", "meaning": "The Majestic" },
+    { "arabic": "الْكَرِيم", "english": "Al-Karim", "meaning": "The Generous" },
+    { "arabic": "الرَّقِيب", "english": "Ar-Raqib", "meaning": "The Watchful One" },
+    { "arabic": "الْمُجِيب", "english": "Al-Mujib", "meaning": "The Responder to Prayer" },
+    { "arabic": "الْوَاسِع", "english": "Al-Wasi", "meaning": "The All-Encompassing" },
+    { "arabic": "الْحَكِيم", "english": "Al-Hakim", "meaning": "The Wise" },
+    { "arabic": "الْوَدُود", "english": "Al-Wadud", "meaning": "The Loving One" },
+    { "arabic": "الْمَجِيد", "english": "Al-Majid", "meaning": "The Glorious" },
+    { "arabic": "الْبَاعِث", "english": "Al-Ba'ith", "meaning": "The Resurrector" },
+    { "arabic": "الشَّهِيد", "english": "Ash-Shahid", "meaning": "The Witness" },
+    { "arabic": "الْحَقّ", "english": "Al-Haqq", "meaning": "The Truth" },
+    { "arabic": "الْوَكِيل", "english": "Al-Wakil", "meaning": "The Trustee" },
+    { "arabic": "الْقَوِيّ", "english": "Al-Qawi", "meaning": "The Strong" },
+    { "arabic": "الْمَتِين", "english": "Al-Matin", "meaning": "The Firm One" },
+    { "arabic": "الْوَلِيّ", "english": "Al-Wali", "meaning": "The Protecting Friend" },
+    { "arabic": "الْحَمِيد", "english": "Al-Hamid", "meaning": "The Praiseworthy" },
+    { "arabic": "الْمُحْصِي", "english": "Al-Muhsi", "meaning": "The Accounter" },
+    { "arabic": "الْمُبْدِئ", "english": "Al-Mubdi", "meaning": "The Originator" },
+    { "arabic": "الْمُعِيد", "english": "Al-Mu'id", "meaning": "The Restorer" },
+    { "arabic": "الْمُحْيِي", "english": "Al-Muhyi", "meaning": "The Giver of Life" },
+    { "arabic": "الْمُمِيت", "english": "Al-Mumit", "meaning": "The Taker of Death" },
+    { "arabic": "الْحَيّ", "english": "Al-Hayy", "meaning": "The Ever-Living" },
+    { "arabic": "الْقَيُّوم", "english": "Al-Qayyum", "meaning": "The Sustainer" },
+    { "arabic": "الْوَاجِد", "english": "Al-Wajid", "meaning": "The Finder" },
+    { "arabic": "الْمَاجِد", "english": "Al-Majid", "meaning": "The Noble" },
+    { "arabic": "الْوَاحِد", "english": "Al-Wahid", "meaning": "The Unique" },
+    { "arabic": "الْأَحَد", "english": "Al-Ahad", "meaning": "The One" },
+    { "arabic": "الصَّمَد", "english": "As-Samad", "meaning": "The Eternal/Self-Sufficient" },
+    { "arabic": "الْقَادِر", "english": "Al-Qadir", "meaning": "The All-Able" },
+    { "arabic": "الْمُقْتَدِر", "english": "Al-Muqtadir", "meaning": "The All-Powerful" },
+    { "arabic": "الْمُقَدِّم", "english": "Al-Muqaddim", "meaning": "The Expediter" },
+    { "arabic": "الْمُؤَخِّر", "english": "Al-Mu'akhkhir", "meaning": "The Delayer" },
+    { "arabic": "الْأَوَّل", "english": "Al-Awwal", "meaning": "The First" },
+    { "arabic": "الْآخِر", "english": "Al-Akhir", "meaning": "The Last" },
+    { "arabic": "الظَّاهِر", "english": "Az-Zahir", "meaning": "The Manifest" },
+    { "arabic": "الْبَاطِن", "english": "Al-Batin", "meaning": "The Hidden" },
+    { "arabic": "الْوَالِي", "english": "Al-Wali", "meaning": "The Governor" },
+    { "arabic": "الْمُتَعَال", "english": "Al-Muta'ali", "meaning": "The Most Exalted" },
+    { "arabic": "الْبَرّ", "english": "Al-Barr", "meaning": "The Source of Goodness" },
+    { "arabic": "التَّوَّاب", "english": "At-Tawwab", "meaning": "The Acceptor of Repentance" },
+    { "arabic": "الْمُنْتَقِم", "english": "Al-Muntaqim", "meaning": "The Avenger" },
+    { "arabic": "الْعَفُوّ", "english": "Al-Afu", "meaning": "The Pardoner" },
+    { "arabic": "الرَّؤُوف", "english": "Ar-Ra'uf", "meaning": "The Compassionate" },
+    { "arabic": "مَالِك الْمُلْك", "english": "Malik-ul-Mulk", "meaning": "Owner of All Sovereignty" },
+    { "arabic": "ذُو الْجَلَال وَالْإِكْرَام", "english": "Dhul-Jalali Wal-Ikram", "meaning": "Lord of Majesty and Honor" },
+    { "arabic": "الْمُقْسِط", "english": "Al-Muqsit", "meaning": "The Equitable" },
+    { "arabic": "الْجَامِع", "english": "Al-Jami", "meaning": "The Gatherer" },
+    { "arabic": "الْغَنِيّ", "english": "Al-Ghani", "meaning": "The Self-Sufficient" },
+    { "arabic": "الْمُغْنِي", "english": "Al-Mughni", "meaning": "The Enricher" },
+    { "arabic": "الْمَانِع", "english": "Al-Mani", "meaning": "The Preventer" },
+    { "arabic": "الضَّارّ", "english": "Ad-Darr", "meaning": "The Distressor" },
+    { "arabic": "النَّافِع", "english": "An-Nafi", "meaning": "The Benefactor" },
+    { "arabic": "النُّور", "english": "An-Nur", "meaning": "The Light" },
+    { "arabic": "الْهَادِي", "english": "Al-Hadi", "meaning": "The Guide" },
+    { "arabic": "الْبَدِيع", "english": "Al-Badi", "meaning": "The Originator" },
+    { "arabic": "الْبَاقِي", "english": "Al-Baqi", "meaning": "The Enduring One" },
+    { "arabic": "الْوَارِث", "english": "Al-Warith", "meaning": "The Inheritor" },
+    { "arabic": "الرَّشِيد", "english": "Ar-Rashid", "meaning": "The Guide to the Right Path" },
+    { "arabic": "الصَّبُور", "english": "As-Sabur", "meaning": "The Patient" }
+  ],
+            history:[
+    { year: "570 CE", title: "Birth of the Prophet", desc: "Muhammad (ﷺ) is born in Makkah in the Year of the Elephant. He was suckled by Halimah al-Sa'diyah, following the noble Makkans' tradition of fostering their children among desert tribes for health and eloquence." },
+    { year: "576 CE", title: "Death of Aminah and Fosterage", desc: "The Prophet's mother, Aminah, passes away when he is six years old in Al-Abwa. He is then placed under the care of his paternal grandfather, Abdul-Muttalib, the chief of Banu Hashim." },
+    { year: "578 CE", title: "Death of Abdul-Muttalib", desc: "The Prophet's grandfather dies. Muhammad (ﷺ), at the age of eight, is taken in by his paternal uncle, Abu Talib, who became his staunch protector against the Quraysh despite facing poverty." },
+    { year: "583 CE", title: "Journey to Sham (Syria)", desc: "Muhammad (ﷺ), around age twelve, accompanies Abu Talib on a trade journey to Syria. The monk Bahira recognized the signs of prophethood on him, advising protection." },
+    { year: "585 CE", title: "Participation in Al-Fijar War", desc: "As a young man, the Prophet (ﷺ) participates in the Sacrilegious War (Harb al-Fijar), a series of battles fought by the Quraysh, though his role was mostly non-combative." },
+    { year: "590 CE", title: "Pledge of Al-Fudul", desc: "Muhammad (ﷺ) actively participates in the 'Pledge of the Virtuous' (Hilf al-Fudul), an agreement among certain Quraysh clans to uphold justice, showing his strong moral character." },
+    { year: "595 CE", title: "Marriage to Khadijah", desc: "The Prophet (ﷺ) marries Khadijah bint Khuwaylid (RA) at the age of 25, who was 15 years his senior. She was a wealthy businesswoman who offered him employment managing her trade caravans." },
+    { year: "605 CE", title: "Arbitration of the Black Stone", desc: "Muhammad (ﷺ), known as **Al-Amin**, resolves a fierce dispute over placing the **Black Stone (Al-Hajar al-Aswad)** back into the Ka'bah during its rebuilding by involving all clan chiefs, demonstrating immense wisdom." },
+    { year: "610 CE", title: "The First Revelation (Iqra!)", desc: "In the **Cave of Hira**, the Angel **Jibreel** (AS) brings the first verses of **Surah Al-Alaq**, marking the start of his prophethood at age 40. Khadijah (RA) was the first person to believe in him." },
+    { year: "610-613 CE", title: "Secret Preaching", desc: "For three years, the Prophet (ﷺ) delivered his message privately. The early converts included **Khadijah** (RA), **Ali** (RA), **Zayd** (RA), and **Abu Bakr** (RA)." },
+    { year: "613 CE", title: "Public Invitation to Islam", desc: "Following the revelation of Surah Al-Hijr:94, the Prophet (ﷺ) began openly inviting the people of Makkah, leading to immediate and intense hostility and persecution from the Quraysh." },
+    { year: "615 CE", title: "First Migration to Abyssinia", desc: "Due to the torture of weak converts, the Prophet (ﷺ) commanded a group of Muslims to seek refuge under the just Christian King, **Negus**, of Aksum. Ja'far ibn Abi Talib (RA) acted as their spokesman." },
+    { year: "616 CE", title: "Conversion of Umar and Hamza", desc: "The conversion of the powerful **Umar ibn al-Khattab** (RA) and the Prophet's uncle **Hamza ibn Abd al-Muttalib** (RA) significantly strengthened the Muslims' position." },
+    { year: "617 CE", title: "Boycott of Banu Hashim", desc: "The Quraysh enforced a severe social and economic **boycott** against the Banu Hashim and Banu Muttalib clans for three years, confining them and causing extreme hunger." },
+    { year: "619 CE", title: "Year of Sorrow (Am al-Huzn)", desc: "The Prophet's wife, **Khadijah** (RA), and his protective uncle, **Abu Talib**, both passed away, leaving the Prophet (ﷺ) deeply grieved and stripped of his main sources of support." },
+    { year: "620 CE", title: "Journey to Ta'if", desc: "The Prophet (ﷺ) traveled to **Ta'if** to seek support but was brutally rejected and stoned, forcing him to return to Makkah under the protection of Mut'im ibn Adi." },
+    { year: "621 CE", title: "Isra and Mi'raj (Night Journey and Ascension)", desc: "The Prophet (ﷺ) was miraculously transported from Makkah to **Al-Aqsa** in Jerusalem and then ascended through the seven Heavens, resulting in the final form of the **five daily prayers (Salat)** being ordained." },
+    { year: "621-622 CE", title: "Pledges of Aqabah", desc: "The **First** and **Second Pledges of Aqabah** with groups from **Yathrib** established an agreement to accept Islam and protect the Prophet (ﷺ), leading directly to the decision for the Hijrah." },
+    { year: "622 CE", title: "The Hijrah (Migration to Madinah)", desc: "The Prophet (ﷺ) and Abu Bakr (RA) secretly migrated to **Yathrib**, which was renamed **Madinat an-Nabi**. This foundational event marks the start of the Islamic Calendar (Hijri) and the building of the **Quba Mosque**." },
+    { year: "622 CE", title: "Building of Masjid an-Nabawi and Mu'akhat", desc: "The **Prophet's Mosque** was built, serving as the center of the state. The **Mu'akhat** (brotherhood) was established, formally pairing the **Muhajirun** (Emigrants) and the **Ansar** (Helpers), fostering selfless unity." },
+    { year: "623 CE", title: "Charter of Madinah", desc: "The Prophet (ﷺ) established the **Constitution of Madinah**, a treaty defining the rights and responsibilities of the diverse communities (Muslims, Jews, and pagans), creating a unified city-state ($\text{Ummah}$)." },
+    { year: "624 CE", title: "Battle of Badr and Change of Qiblah", desc: "The **Battle of Badr** resulted in a decisive victory for the Muslims. The Qiblah (direction of prayer) was definitively changed from Jerusalem to the **Ka'bah** in Makkah." },
+    { year: "625 CE", title: "Battle of Uhud and Expulsion of Banu Nadir", desc: "The Muslims suffered a setback at the **Battle of Uhud**; **Hamza** (RA) was martyred. The Jewish tribe of **Banu Nadir** was later expelled from Madinah for planning treachery." },
+    { year: "627 CE", title: "Battle of the Trench (Al-Khandaq)", desc: "A massive coalition of Quraysh besieged Madinah. The Muslims, advised by **Salman al-Farsi** (RA), dug a defensive **trench**, leading to a strategic victory and the dispersal of the Makkan alliance." },
+    { year: "627 CE", title: "Event of Banu Qurayzah", desc: "Following the Battle of the Trench, the Prophet (ﷺ) dealt decisively with the Jewish tribe of **Banu Qurayzah** for their alleged collaboration with the enemy, securing Madinah's internal stability." },
+    { year: "628 CE", title: "Treaty of Hudaybiyyah and Pledge of Ridwan", desc: "The Prophet (ﷺ) signed the **Treaty of Hudaybiyyah**, a 10-year truce with the Quraysh, later revealed as a 'Clear Victory' (Surah Al-Fath). The **Pledge of Ridwan** occurred beforehand." },
+    { year: "628 CE", title: "Letters to Rulers", desc: "The Prophet (ﷺ) dispatched letters to regional superpowers, including the Byzantine Emperor **Heraclius** and the Sassanid Emperor **Khusrow II**, inviting them to Islam." },
+    { year: "629 CE", title: "Conquest of Khaybar and Umrah al-Qada", desc: "The Muslim army conquered the Jewish stronghold of **Khaybar**. Later, the Muslims performed the **Umrah al-Qada** (Compensatory Minor Pilgrimage)." },
+    { year: "629 CE", title: "Battle of Mu'tah", desc: "The first large-scale confrontation with the powerful **Byzantine Empire** forces. Muslim leaders were martyred, but **Khalid ibn al-Walid** managed an organized retreat." },
+    { year: "630 CE", title: "Conquest of Makkah (Fath Makkah)", desc: "The Prophet (ﷺ) marched on Makkah with **10,000 men** and took the city **bloodlessly** after the Quraysh violated the truce. He declared a general amnesty and oversaw the **destruction of all idols** in the Ka'bah." },
+    { year: "630 CE", title: "Battle of Hunayn and Siege of Ta'if", desc: "The Muslim army was ambushed by the **Hawazin** and **Thaqif** tribes at the **Battle of Hunayn** but ultimately prevailed. This was followed by the strategic siege of **Ta'if**." },
+    { year: "631 CE", title: "Expedition of Tabuk and Year of Deputations", desc: "The Prophet (ﷺ) led the army to **Tabuk** on the Byzantine border, confirming Muslim military strength. This year is known as the **Year of Deputations (Am al-Wufud)** as numerous Arabian tribes sent delegations to accept Islam." },
+    { year: "632 CE", title: "Farewell Hajj and Sermon", desc: "The Prophet (ﷺ) performed his last Hajj, delivering the comprehensive **Farewell Sermon** on Mount Arafat, which emphasized human rights, equality, and the completion of the religion." },
+    { year: "632 CE", title: "Death of Prophet (ﷺ) and Abu Bakr's Succession (632–634 CE)", desc: "The Prophet (ﷺ) passed away in Madinah. **Abu Bakr as-Siddiq** (RA) was elected as the **first Caliph (Khalifah)** at Saqifah Banu Sa'idah, tasked with stabilizing and preserving the unity of the community." },
+    { year: "632-633 CE", title: "Wars of Apostasy (Riddah Wars)", desc: "Caliph Abu Bakr (RA) successfully consolidated the Arabian Peninsula by fighting the **Riddah Wars** against tribes who rejected Medinan authority, refused Zakat, or followed false prophets, which was crucial for preserving the unity of the nascent Islamic state." },
+    { year: "634 CE", title: "Death of Abu Bakr and Succession of Umar (634–644 CE)", desc: "Abu Bakr (RA) dies and appoints **Umar ibn al-Khattab** (RA) as the second Caliph. Umar begins the rapid, organized expansion of the Islamic Caliphate and establishes fundamental administrative institutions like the Diwan." },
+    { year: "636 CE", title: "Battle of Yarmouk and Al-Qadisiyyah", desc: "Two decisive battles cemented the Caliphate's power: **Yarmouk** against the **Byzantines** (securing Syria/Levant) and **Al-Qadisiyyah** against the **Sassanid Persians** (leading to the fall of the Persian Empire)." },
+    { year: "638 CE", title: "Conquest of Jerusalem and Al-Aqsa", desc: "Caliph Umar (RA) personally travels to **Jerusalem** to accept its surrender (Covenant of Umar), guaranteeing safety and religious freedom. He ordered the clearance and began the rebuilding of the Al-Aqsa compound." },
+    { year: "640-642 CE", title: "Conquest of Egypt and Administration", desc: "Muslim forces, led by Amr ibn al-As, conquer **Egypt** and seize Alexandria. Caliph Umar (RA) establishes the **Diwan** (administrative departments) and introduces the **Jizyah** and **Kharaj** for efficient fiscal governance." },
+    { year: "644 CE", title: "Martyrdom of Umar and Succession of Uthman (644–656 CE)", desc: "Caliph Umar (RA) is assassinated by a Persian slave in the mosque. **Uthman ibn Affan** (RA) is elected as the third Caliph by a Shura, initiating a period of massive territorial expansion into North Africa and Central Asia." },
+    { year: "646-652 CE", title: "Standardization of the Qur'an", desc: "Caliph Uthman (RA) commissions the compilation and standardization of the official text of the **Qur'an (Mushaf)** to resolve variant readings arising from the empire's vast linguistic diversity. Official copies were sent to provincial centers." },
+    { year: "655 CE", title: "Naval Expansion and Battle of the Masts", desc: "The Muslim navy achieves a decisive victory over the Byzantine fleet in the **Battle of the Masts (Dhat as-Sawari)**, securing Muslim naval supremacy in the Eastern Mediterranean." },
+    { year: "656 CE", title: "Martyrdom of Uthman and Succession of Ali (656–661 CE)", desc: "Caliph Uthman (RA) is besieged and assassinated by rebels in Madinah. **Ali ibn Abi Talib** (RA) is elected as the fourth Caliph, immediately inheriting the political turbulence that led to the **First Fitna** (Civil War)." },
+    { year: "656 CE", title: "Battle of the Camel (First Fitna Begins)", desc: "Caliph Ali (RA) defeats the rebel forces, which included Talhah (RA), Zubayr (RA), and Aisha (RA), near Basra. Ali subsequently moved the political capital from Madinah to **Kufa, Iraq**." },
+    { year: "657 CE", title: "Battle of Siffin", desc: "Caliph Ali's (RA) forces fight the army of **Mu'awiyah ibn Abi Sufyan**. The battle ends inconclusively with a call for arbitration, leading to the damaging split of the **Khawarij** sect from Ali's camp." },
+    { year: "661 CE", title: "Martyrdom of Ali and End of Rashudin Caliphate", desc: "Caliph Ali (RA) is assassinated by a Kharijite extremist in Kufa. His death marks the **end of the Rightly Guided Caliphs** (Khulafa ar-Rashidun) era and the political fragmentation of the empire." },
+    { year: "661 CE", title: "Establishment of the Umayyad Caliphate (661–750 CE)", desc: "**Mu'awiyah ibn Abi Sufyan** consolidates power and establishes the **Umayyad Caliphate**. The capital is moved to **Damascus**, establishing a dynastic, hereditary monarchy." },
+    { year: "680 CE", title: "Battle of Karbala", desc: "The Prophet's grandson, **Husayn ibn Ali** (RA), is tragically martyred along with his companions by the Umayyad forces at **Karbala** (Iraq) after refusing to pledge allegiance to Yazid I. This event is central to Shia Islam and deepened the religious-political schism." },
+    { year: "683-692 CE", title: "Second Fitna and Rise of Abd al-Malik", desc: "A second civil war erupts, led by the counter-Caliph **Abdullah ibn al-Zubayr** (RA) based in Makkah. Umayyad Caliph **Abd al-Malik** eventually defeats the rebels, restores unity, and begins a major centralization and administrative reform program." },
+    { year: "691 CE", title: "Building of the Dome of the Rock and Arabization", desc: "Umayyad Caliph Abd al-Malik commissions the construction of the magnificent **Dome of the Rock** in Jerusalem. He also initiates the **Arabization** of the *Diwans* (government administration) and the minting of a purely Islamic coinage." },
+    { year: "711-713 CE", title: "Conquest of Spain and Indus Valley", desc: "The Islamic empire achieves its greatest geographical extent under the Umayyads. Muslim forces led by **Tariq ibn Ziyad** conquer **Hispania (Al-Andalus/Spain)** in the West, and those led by **Muhammad bin Qasim** conquer the **Indus Valley** (Sindh region) in the East." },
+    { year: "732 CE", title: "Battle of Tours (Poitiers)", desc: "Muslim forces advancing into Europe are defeated by Frankish forces led by Charles Martel at the **Battle of Tours** in modern France, marking the effective halt of major Muslim expansion into Western Europe." },
+    { year: "750 CE", title: "Fall of the Umayyad Caliphate and The Revolution", desc: "The **Abbasid Revolution**, fueled by non-Arab converts (Mawali) and those sympathetic to the Prophet's family, overthrows the Umayyad dynasty. The Abbasids established a new Caliphate." },
+    { year: "756 CE", "title": "Establishment of the Emirate of Córdoba", "desc": "The last surviving Umayyad prince, **Abd al-Rahman I**, escapes the Abbasid purge and establishes an independent **Umayyad Emirate** in **Al-Andalus (Spain)**, creating a lasting political division in the Islamic world." },
+    { year: "762 CE", "title": "Founding of Baghdad", "desc": "The second Abbasid Caliph, **Al-Mansur**, founds the new capital city of **Baghdad** (Madinat al-Salam, 'City of Peace') on the Tigris River. It quickly becomes the largest city in the world and the center of Islamic learning and commerce." },
+    { year: "786-809 CE", "title": "Reign of Harun al-Rashid (Abbasid Golden Age Peak)", "desc": "The peak of the Abbasid Caliphate is reached under Caliph **Harun al-Rashid**. This era saw massive intellectual, scientific, and cultural flourishing, including the early establishment of the **House of Wisdom (Bayt al-Hikmah)**." },
+    { year: "813-833 CE", "title": "Reign of Al-Ma'mun and House of Wisdom", "desc": "Caliph **Al-Ma'mun** solidifies the **House of Wisdom** in Baghdad as the principal center for the massive **translation movement** of Greek, Syriac, Persian, and Indian scientific and philosophical texts into Arabic, propelling the Islamic Renaissance." },
+    { year: "836 CE", "title": "The Samarra Period Begins", "desc": "Caliph **Al-Mu'tasim** moves the Abbasid capital to **Samarra** due to tensions in Baghdad. This period (836–892 CE) was marked by the increasing influence of Turkish slave-soldiers (Ghilman/Mamluks) in the central government, weakening the Caliph's control." },
+    { year: "909 CE", "title": "Rise of the Fatimid Caliphate", "desc": "The Shia **Fatimid Caliphate** is established in North Africa (modern Tunisia), claiming descent from Fatima (RA). They eventually conquer Egypt and found the city of **Cairo** as their new, rival capital, marking a significant, enduring political and religious challenge to the Sunni Abbasid authority." },
+    { year: "929 CE", "title": "Declaration of the Caliphate of Córdoba", "desc": "**Abd al-Rahman III** of Al-Andalus declares himself **Caliph**, creating a third rival Caliphate (alongside the Abbasids and Fatimids) and further fracturing the political unity of the Muslim world during the Islamic Golden Age." },
+    { year: "945 CE", "title": "Buwayhid Control of Baghdad", "desc": "The Persian Shia **Buyid dynasty** (Buwayhid) conquers Baghdad. While they maintain the Abbasid Caliph as a mere figurehead for religious legitimacy, political and military power shifts entirely to the Buyids, symbolizing the definitive decline of the Abbasid Caliphate's secular power." },
+    { year: "969 CE", "title": "Fatimid Conquest of Egypt and Al-Azhar", "desc": "The **Fatimid Caliphate** conquers Egypt and founds **Al-Qahira (Cairo)**. They establish the famous **Al-Azhar Mosque and University**, which becomes a central institution of Shia (Ismaili) learning and propagation." },
+    { year: "973 CE", "title": "Birth of Al-Biruni", "desc": "Birth of **Al-Biruni**, the Persian polymath known as the 'founder of Indology' and an early proponent of the experimental method. His vast contributions spanned mathematics, astronomy, physics, and history." },
+    { year: "1037 CE", "title": "Death of Avicenna (Ibn Sina)", "desc": "The death of the Persian polymath **Avicenna**, a towering figure of the Islamic Golden Age. His medical encyclopedia, *The Canon of Medicine*, and philosophical work were standard texts in the Muslim world and Europe for centuries." },
+    { year: "1055 CE", "title": "Seljuq Control of Baghdad", "desc": "The Sunni Turkish **Seljuq dynasty**, led by Tughril Beg, enters Baghdad and ends the Buyid control, restoring the symbolic Sunni authority of the Abbasid Caliphate while taking the true military power for themselves. This marks the beginning of Turkish dominance in the East." },
+    { year: "1090 CE", "title": "Rise of the Assassins (Nizari Ismailis)", "desc": "Hasan-i Sabbah establishes the Nizari Ismaili state at **Alamut Castle** in Persia. Known in the West as the Assassins, they posed a strategic political and military threat to the Seljuq and later the Ayyubid empires." },
+    { year: "1095 CE", "title": "Beginning of the First Crusade", "desc": "Pope Urban II calls for the **First Crusade** at the Council of Clermont, initiating the Crusader period. The political fragmentation of the Muslim world (Seljuqs, Fatimids, and smaller successor states) makes it vulnerable to the Latin Christian armies." },
+    { year: "1099 CE", "title": "Crusader Conquest of Jerusalem", "desc": "The armies of the First Crusade successfully capture **Jerusalem** from the Fatimids, resulting in a massacre of the Jewish and Muslim inhabitants and the establishment of the Latin Kingdom of Jerusalem, shattering the political balance in the Levant." },
+    { year: "1111 CE", "title": "Death of Al-Ghazali", "desc": "Death of the Persian theologian and philosopher **Al-Ghazali**. His work, particularly *The Revival of the Religious Sciences*, is credited with reconciling Islamic theology and Sufism and had a profound, lasting impact on Sunni thought." },
+    { year: "1147-1149 CE", "title": "Second Crusade", "desc": "The failure of the Second Crusade, launched in response to the fall of the County of Edessa, demonstrated the increasing consolidation of Muslim power under the Zangid dynasty." },
+    { year: "1187 CE", "title": "Battle of Hattin and Recapture of Jerusalem", "desc": "The great Kurdish Muslim Sultan **Salah ad-Din (Saladin)** decisively defeats the Crusader armies at the **Battle of Hattin**. He then successfully reclaims **Jerusalem** for the Muslims, sparking the Third Crusade but allowing the Christian population to leave peacefully." },
+    { year: "1193 CE", "title": "Death of Saladin and Fragmentation", "desc": "The death of Saladin leads to the division of his **Ayyubid Empire** among his descendants. Despite this fragmentation, the dynasty successfully resisted the subsequent Crusades (including the Third and Fifth) but lost political unity." },
+    { year: "1194 CE", "title": "Ghūrid Conquest of Delhi", "desc": "The Ghūrid dynasty conquers Delhi, expanding Muslim rule into the heart of the Indian subcontinent and laying the foundation for the **Delhi Sultanate** (established 1206 CE)." },
+    { year: "1236 CE", "title": "Beginning of the Reconquista's Final Phase", "desc": "Ferdinand III of Castile captures Córdoba. The continued pressure from the Christian kingdoms in the Iberian Peninsula increasingly threatens the remaining Muslim kingdoms, such as Granada." },
+    { year: "1250 CE", "title": "Rise of the Mamluk Sultanate", "desc": "The **Mamluks** (Turkic slave-soldiers) overthrow the Ayyubid dynasty in Egypt and establish the powerful **Mamluk Sultanate**, which would become the dominant force in the Levant and North Africa, inheriting the mantle of resisting the Crusaders." },
+    { year: "1258 CE", "title": "Sack of Baghdad and End of the Abbasid Caliphate", "desc": "The **Mongol army** under **Hulagu Khan** besieges and sacks **Baghdad**, destroying the city, massacring the populace, and executing the last Abbasid Caliph, Al-Musta'sim. This event is conventionally regarded as the **end of the Islamic Golden Age** and the political caliphate that began with Abu Bakr." },
+    { year: "1260 CE", "title": "Battle of Ain Jalut", "desc": "The Egyptian **Mamluk army**, led by Qutuz and Baybars, decisively defeats the Mongol army at the **Battle of Ain Jalut** in Palestine. This critical victory halts the seemingly unstoppable westward expansion of the Mongols, saving the Muslim heartland (Egypt and the Levant)." },
+    { year: "1291 CE", "title": "Fall of Acre (End of Crusader States)", "desc": "The Mamluk Sultan **Al-Ashraf Khalil** captures **Acre**, the last major Crusader stronghold in the Levant. This victory marks the complete expulsion of the Latin Crusaders and the final collapse of the Crusader states established during the First Crusade." },
+    { year: "1299 CE", "title": "Foundation of the Ottoman Beylik", "desc": "**Osman I**, the leader of a small group of Turkic tribes (Oghuz) in Anatolia, establishes a small state (Beylik) that would eventually grow into the **Ottoman Empire**, succeeding the declining Seljuq Sultanate of Rûm." },
+    { year: "1453 CE", "title": "Conquest of Constantinople (Rise of the Ottomans)", "desc": "The Ottoman Sultan **Mehmed II** (the Conqueror) captures **Constantinople**, the capital of the Byzantine Empire. The city is renamed **Istanbul** and becomes the new capital of the Ottoman Empire, which quickly solidifies its position as the dominant global Islamic power." },
+    { year: "1492 CE", "title": "Fall of Granada and Expulsion from Spain", "desc": "The Nasrid Sultanate of **Granada**, the last Muslim state in **Al-Andalus**, falls to the Catholic Monarchs of Castile and Aragon. The **Alhambra Decree** mandates the expulsion or forced conversion of all Muslims and Jews from Spain, marking the **end of Islamic rule in Iberia**." },
+    { year: "1517 CE", "title": "Ottoman Conquest of Egypt and Syria (End of Mamluks)", "desc": "The Ottoman Sultan **Selim I** defeats the Mamluks, conquering Syria, Egypt, and the Hejaz (including Makkah and Madinah). This transfers the custodianship of the two Holy Cities and the symbolic title of **Caliph** (which the Mamluks had protected after 1258) to the Ottoman Sultans." },
+    { year: "1520-1566 CE", "title": "Suleiman the Magnificent (Ottoman Peak)", "desc": "The reign of **Suleiman the Magnificent** marks the **peak of the Ottoman Empire's power and influence**. The empire expands into Europe (Siege of Vienna, 1529) and consolidates its laws, administration, and arts, reaching its zenith in terms of territorial reach and cultural production." },
+    { year: "1526 CE", "title": "Foundation of the Mughal Empire", "desc": "**Babur**, a descendant of Timur, defeats the Delhi Sultanate at the **First Battle of Panipat** and establishes the **Mughal Empire** in the Indian subcontinent, which would become the last of the three great 'Gunpowder Empires' and one of the wealthiest empires in the world." },
+    { year: "1722 CE", "title": "Fall of the Safavid Empire", "desc": "The **Safavid Empire** (Iran), founded in 1501 and known for establishing Shia Islam as the state religion, is conquered by the Afghan Hotaki dynasty, marking a major turning point in Persian history and destabilizing the region." },
+    { year: "1857 CE", "title": "Formal Dissolution of the Mughal Empire", "desc": "Following the Indian Rebellion (Sepoy Mutiny), the British formally depose the last Mughal Emperor, **Bahadur Shah II**, and annex the remnants of the empire. This ends over 300 years of Mughal rule and is seen as a key step in the British consolidation of power in India." },
+    { year: "1924 CE", "title": "Abolition of the Ottoman Caliphate and End of the Last Islamic Empire", desc: "Following the Turkish War of Independence, the **Grand National Assembly of Turkey** under **Mustafa Kemal Atatürk** formally **abolishes the Ottoman Caliphate**. This act ends the rule of the Ottoman dynasty, which controlled the last major Islamic empire and claimed the title of Caliph, marking the **formal end of the Caliphal system** in the Muslim world." }
+],
+            articles: [
+  {
+    "id": 1,
+    "title": "The 5 Pillars of Islam Explained",
+    "category": "Basics",
+    "excerpt": "A comprehensive guide to the foundation of Islamic faith: Shahada, Salah, Zakat, Sawm, and Hajj.",
+    "image": "https://images.unsplash.com/photo-1519817650390-64a93db51149?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<strong>1. Shahada (Faith):</strong> The declaration 'There is no god but Allah, and Muhammad is the Messenger of Allah.'<br><br><strong>2. Salah (Prayer):</strong> Five daily prayers performed at dawn, noon, mid-afternoon, sunset, and evening.<br><br><strong>3. Zakat (Charity):</strong> Giving 2.5% of one's accumulated wealth to the needy.<br><br><strong>4. Sawm (Fasting):</strong> Abstaining from food and drink during Ramadan.<br><br><strong>5. Hajj (Pilgrimage):</strong> A journey to Makkah at least once in a lifetime."
+  },
+  {
+    "id": 2,
+    "title": "Tahajjud: The Prayer of Honor",
+    "category": "Spirituality",
+    "excerpt": "Discover the immense benefits of waking up for the Night Prayer when the world sleeps.",
+    "image": "https://images.unsplash.com/photo-1533527230006-8d19da218b32?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>The Prophet ﷺ said: 'The best prayer after the obligatory prayers is the night prayer.' It is a time when the doors of the sky are open and Allah descends to the lowest heaven asking, 'Who is asking of Me, so I may give him?'</p><br><p>It brings light to the face, peace to the heart, and strength to the soul. Even two rak'ats before Fajr can change your life.</p>"
+  },
+  {
+    "id": 3,
+    "title": "Rights of Parents",
+    "category": "Ethics",
+    "excerpt": "Kindness to parents is second only to the worship of Allah in the Quran.",
+    "image": "https://images.unsplash.com/photo-1519681393784-d8e5b5a45458?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Allah says: 'And your Lord has decreed that you not worship except Him, and to parents, good treatment.' (17:23)</p><br><p>Even if they are difficult, a Muslim is commanded to treat them with 'Ihsan' (excellence). A man came to the Prophet asking who deserves his companionship most. The Prophet replied 'Your Mother' three times, then 'Your Father'.</p>"
+  },
+  {
+    "id": 4,
+    "title": "Women in Islam",
+    "category": "Society",
+    "excerpt": "Islam gave women rights to property, education, and choice 1400 years ago.",
+    "image": "https://images.unsplash.com/photo-1564639969248-18e0018d9620?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Before Islam, women were often treated as property. Islam elevated their status, making them spiritual equals to men. 'Whoever works righteousness, whether male or female, while he is a believer - We will surely cause him to live a good life.' (16:97)</p>"
+  },
+  {
+    "id": 5,
+    "title": "The Power of Istighfar (Seeking Forgiveness)",
+    "category": "Spirituality",
+    "excerpt": "How constantly seeking Allah's forgiveness opens doors to provision and peace.",
+    "image": "https://images.unsplash.com/photo-1596773534241-118d3b80b278?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>The Prophet Muhammad ﷺ said: 'If anyone constantly seeks pardon (from Allah), Allah will appoint for him a way out of every distress and a relief from every anxiety, and will provide sustenance for him from where he does not expect.' (Abu Dawud)</p><br><p>Reciting 'Astaghfirullah' is a purification of the soul and a connection to the Merciful.</p>"
+  },
+  {
+    "id": 6,
+    "title": "Understanding Tawheed: The Oneness of Allah",
+    "category": "Aqeedah",
+    "excerpt": "The foundational concept of Islam: affirming Allah's absolute singularity in Lordship, Worship, and Names & Attributes.",
+    "image": "https://images.unsplash.com/photo-1559400276-857e0081d596?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<strong>Tawheed ar-Rububiyyah:</strong> Oneness of Lordship (Creator, Sustainer). <strong>Tawheed al-Uluhiyyah:</strong> Oneness of Worship (directing all acts of worship to Allah alone). <strong>Tawheed al-Asma was-Sifat:</strong> Oneness of Names and Attributes (affirming what Allah has affirmed for Himself)."
+  },
+  {
+    "id": 7,
+    "title": "The Blessings of Reading the Quran",
+    "category": "Ibadah",
+    "excerpt": "A look at the immense reward for reciting, understanding, and implementing the Holy Quran.",
+    "image": "https://images.unsplash.com/photo-1588691880486-10b27161b427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>The Prophet ﷺ said: 'Whoever reads a letter from the Book of Allah, he will have a reward. And that reward will be multiplied by ten.' The Quran is a light, a cure for what is in the breasts, and a guide to the straight path.</p>"
+  },
+  {
+    "id": 8,
+    "title": "How to Achieve Khushu in Salah",
+    "category": "Spirituality",
+    "excerpt": "Practical steps to attain genuine concentration, stillness, and awe in your daily prayers.",
+    "image": "https://images.unsplash.com/photo-1601335222519-c09e394f7830?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Khushu (humility) is the heart and soul of Salah. Focus on the meaning of the words, remember you are standing before Allah, and keep your gaze fixed on the spot of prostration. Combat distractions before and during the prayer.</p>"
+  },
+  {
+    "id": 9,
+    "title": "The Sunnah of Miswak: Oral Hygiene and Reward",
+    "category": "Health",
+    "excerpt": "Exploring the Prophetic tradition of using the Miswak and its spiritual and physical benefits.",
+    "image": "https://images.unsplash.com/photo-1582239611684-25e167909b02?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>The Prophet ﷺ said: 'The Miswak is a means of purifying the mouth and pleasing the Lord.' Using it before prayer or entering the home is a simple act that carries significant reward and promotes oral health.</p>"
+  },
+  {
+    "id": 10,
+    "title": "The Concept of Qadar (Divine Decree)",
+    "category": "Aqeedah",
+    "excerpt": "Reconciling free will with Allah's all-encompassing knowledge and plan.",
+    "image": "https://images.unsplash.com/photo-1627916688588-e21c3275d319?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Qadar includes four aspects: Allah's knowledge of everything, His writing of it, His will that it should happen, and His creation of it. Understanding it brings peace, knowing that what missed you was never to reach you, and what reached you was never to miss you.</p>"
+  },
+  {
+    "id": 11,
+    "title": "Zakat: More Than Just Charity",
+    "category": "Fatawa",
+    "excerpt": "A deep dive into the rules, calculation, and distribution of the obligatory purification of wealth.",
+    "image": "https://images.unsplash.com/photo-1549480108-a400508e682e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Zakat is a pillar of Islam, not a voluntary donation. It is due on gold, silver, cash, trade goods, and certain livestock, once the wealth reaches the minimum threshold (Nisab) and a year (Hawl) has passed.</p>"
+  },
+  {
+    "id": 12,
+    "title": "The Etiquette of Visiting the Sick",
+    "category": "Adab",
+    "excerpt": "Following the Sunnah in visiting and praying for a person who is unwell.",
+    "image": "https://images.unsplash.com/photo-1582759714881-8b0124b896b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Visiting the sick (Iyaadat al-Mareed) is a great right of a Muslim upon another. It earns a person a place in a garden of paradise until they return. Offer short, comforting words and make dua (supplication) for their recovery.</p>"
+  },
+  {
+    "id": 13,
+    "title": "Dua: The Weapon of the Believer",
+    "category": "Spirituality",
+    "excerpt": "The immense power of supplication and the best times and ways to make Dua accepted.",
+    "image": "https://images.unsplash.com/photo-1596773534241-118d3b80b278?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Dua is the essence of worship. Times of acceptance include: the last third of the night, between the Adhan and Iqamah, while fasting, and on the Day of Arafah. Always begin with praising Allah and sending Salawat upon the Prophet ﷺ.</p>"
+  },
+  {
+    "id": 14,
+    "title": "The Importance of Fasting Outside Ramadan (Nafl Sawm)",
+    "category": "Ibadah",
+    "excerpt": "Exploring voluntary fasts like the six days of Shawwal, Ashura, and Arafah.",
+    "image": "https://images.unsplash.com/photo-1558235282-36c9657c9197?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Fasting six days of Shawwal after Ramadan is like fasting the entire year. Fasting on Arafah (for non-pilgrims) expiates the sins of the previous and coming year. Voluntary fasts draw one closer to Allah.</p>"
+  },
+  {
+    "id": 15,
+    "title": "Halal and Haram in Food and Drink",
+    "category": "Fatawa",
+    "excerpt": "A guide to permissible and forbidden items according to Islamic law.",
+    "image": "https://images.unsplash.com/photo-1606825227764-a7457d5e4b77?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>The basic rule is that all food is Halal (permissible) except what is specifically made Haram (forbidden) by Allah and His Messenger. Forbidden items include swine, blood, intoxicants, and meat not slaughtered Islamically (Dhabiha).</p>"
+  },
+  {
+    "id": 16,
+    "title": "Jannah: The Eternal Home",
+    "category": "Akhira",
+    "excerpt": "Descriptions of Paradise from the Quran and Sunnah and how to strive for its highest levels.",
+    "image": "https://images.unsplash.com/photo-1533107050212-f19b22a27549?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Jannah is a pleasure no eye has seen, no ear has heard, and no human heart has conceived. Its gates are opened for the righteous. Seeking Allah's pleasure, fulfilling obligations, and striving in good deeds are the keys to its entry.</p>"
+  },
+  {
+    "id": 17,
+    "title": "The Ethics of Business and Earning Halal Income",
+    "category": "Muamalat",
+    "excerpt": "Islamic guidelines on trade, contracts, honesty, and avoiding Riba (interest/usury).",
+    "image": "https://images.unsplash.com/photo-1574343890288-44445c7b3c29?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Honesty and truthfulness are essential in business. The Prophet ﷺ said: 'The honest and trustworthy merchant will be with the Prophets, the steadfast affirmers of truth, and the martyrs.' Riba is strictly forbidden, destroying barakah.</p>"
+  },
+  {
+    "id": 18,
+    "title": "Wudu (Ablution): The Key to Salah",
+    "category": "Ibadah",
+    "excerpt": "A step-by-step guide to performing Wudu correctly and its spiritual cleansing benefits.",
+    "image": "https://images.unsplash.com/photo-1563273760-49658e46f0c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Wudu is purification before prayer. Begin with Bismillah and end with the Shahada, seeking the forgiveness of sins with every drop of water that falls from the limbs. The intention (Niyyah) is crucial.</p>"
+  },
+  {
+    "id": 19,
+    "title": "Dealing with Calamity and Trials",
+    "category": "Faith",
+    "excerpt": "The Muslim perspective on hardship, patience (Sabr), and relying on Allah.",
+    "image": "https://images.unsplash.com/photo-1587834789510-1c667a4e63f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Trials are a test and a means of purification and elevation of rank. The believer's affair is amazing: if something good happens, he is grateful, and that is good for him; if a difficulty befalls him, he is patient, and that is good for him. (Muslim)</p>"
+  },
+  {
+    "id": 20,
+    "title": "The Meaning of Ihsan (Excellence)",
+    "category": "Spirituality",
+    "excerpt": "Worshipping Allah as if you see Him, and though you do not see Him, knowing that He sees you.",
+    "image": "https://images.unsplash.com/photo-1565538356782-e20436449175?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Ihsan is the highest level of faith, where one perfects their worship and interactions with others. It involves sincerity (Ikhlas) and following the Sunnah in all actions, internalizing Allah's constant observation.</p>"
+  },
+  {
+    "id": 21,
+    "title": "Seerah: The Early Life of Prophet Muhammad ﷺ",
+    "category": "History",
+    "excerpt": "Key events from the birth of the Prophet ﷺ to the start of revelation.",
+    "image": "https://images.unsplash.com/photo-1620246261543-34e90868f072?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Born in Makkah in the Year of the Elephant, the Prophet Muhammad ﷺ was an orphan raised by his grandfather and uncle. He was known as Al-Amin (The Trustworthy) long before Prophethood, setting an example of integrity.</p>"
+  },
+  {
+    "id": 22,
+    "title": "Tazkiyah an-Nafs: Purifying the Soul",
+    "category": "Spirituality",
+    "excerpt": "Islamic methods for inner cleansing, overcoming negative traits, and nurturing the heart.",
+    "image": "https://images.unsplash.com/photo-1594895646194-e4c194098c25?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Purification of the soul involves constant repentance, remembrance of Allah (Dhikr), reflecting on the Quran, and companionship with the righteous. Guarding the tongue and eyes are vital steps.</p>"
+  },
+  {
+    "id": 23,
+    "title": "The Power of Sadaqah Jariyah (Ongoing Charity)",
+    "category": "Ibadah",
+    "excerpt": "Investing in deeds that continue to reward you after you pass away.",
+    "image": "https://images.unsplash.com/photo-1557997321-72945acb7139?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>The Prophet ﷺ said: 'When a man dies, all his deeds come to an end except for three: an ongoing charity (Sadaqah Jariyah), beneficial knowledge, or a righteous son who will pray for him.' Examples include building a well or printing Islamic books.</p>"
+  },
+  {
+    "id": 24,
+    "title": "Rights of Neighbors in Islam",
+    "category": "Ethics",
+    "excerpt": "How to treat your neighbors, whether they are Muslim or non-Muslim, according to the Sunnah.",
+    "image": "https://images.unsplash.com/photo-1579547621419-74d758999331?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Jibreel (AS) kept advising the Prophet ﷺ about the neighbor until he thought he would include them among the inheritors. Kindness, avoiding harm, and sharing with them are essential aspects of a Muslim's character.</p>"
+  },
+  {
+    "id": 25,
+    "title": "Understanding the Day of Judgment (Yawm al-Qiyamah)",
+    "category": "Akhira",
+    "excerpt": "A summary of the major and minor signs, and the events that will occur on the Last Day.",
+    "image": "https://images.unsplash.com/photo-1591873172089-a789a5e8f470?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>The Day of Judgment is inevitable. Everyone will be resurrected and judged by Allah. Belief in the Last Day is one of the six pillars of Iman. Deeds will be weighed, and people will cross the Sirat (Bridge).</p>"
+  },
+  {
+    "id": 26,
+    "title": "The Etiquette of Seeking Knowledge",
+    "category": "Basics",
+    "excerpt": "Essential advice for students of Islamic knowledge, focusing on sincerity and humility.",
+    "image": "https://images.unsplash.com/photo-1532012195252-45e0d757d544?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Seeking knowledge is an obligation. The best way is with sincerity for Allah's sake, patience, following the scholars, and putting the knowledge into action. An angel spreads its wings for the seeker of knowledge, pleased with what he is doing.</p>"
+  },
+  {
+    "id": 27,
+    "title": "Salah al-Jumu'ah: The Blessings of Friday Prayer",
+    "category": "Ibadah",
+    "excerpt": "The rulings and virtues of the weekly congregational prayer.",
+    "image": "https://images.unsplash.com/photo-1558908320-f404481c4e72?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Jumu'ah is the best day of the week. Taking a Ghusl (ritual bath), wearing clean clothes, using perfume, and going early to the Masjid are highly rewarded Sunnahs. Listening attentively to the Khutbah (sermon) is obligatory.</p>"
+  },
+  {
+    "id": 28,
+    "title": "The Meaning and Practice of Taqwa (God-Consciousness)",
+    "category": "Spirituality",
+    "excerpt": "How to cultivate a fear of Allah that leads to obeying His commands and avoiding sins.",
+    "image": "https://images.unsplash.com/photo-1594895646194-e4c194098c25?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Taqwa is to make a shield between yourself and Allah's punishment. It is the key to guidance and provision, as Allah says: 'And whoever fears Allah - He will make for him a way out and will provide for him from where he does not expect.' (65:2-3)</p>"
+  },
+  {
+    "id": 29,
+    "title": "Sincerity (Ikhlas) in Deeds",
+    "category": "Faith",
+    "excerpt": "Ensuring all your acts of worship are solely for the sake of Allah and avoiding Riya (showing off).",
+    "image": "https://images.unsplash.com/photo-1557871239-44e27f052538?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Ikhlas is the first condition for any deed to be accepted. The Prophet ﷺ said: 'Indeed, Allah does not look at your bodies nor does He look at your appearance. Rather, He looks at your hearts (and your deeds).'</p>"
+  },
+  {
+    "id": 30,
+    "title": "The History of the Ka'bah",
+    "category": "History",
+    "excerpt": "Tracing the origins of the sacred structure built by Prophet Ibrahim and Isma'il (AS).",
+    "image": "https://images.unsplash.com/photo-1592683935293-1b9b2c3c9710?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>The Ka'bah, the House of Allah, was originally built by the Prophet Ibrahim (Abraham) and his son Isma'il (Ishmael). It is the Qibla (direction of prayer) for Muslims worldwide and the destination of Hajj and Umrah.</p>"
+  },
+  {
+    "id": 31,
+    "title": "Marriage (Nikah) in Islam: Foundation of Society",
+    "category": "Society",
+    "excerpt": "The purpose, rights, and responsibilities in the sacred covenant of marriage.",
+    "image": "https://images.unsplash.com/photo-1590218751412-f02758110b80?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Nikah is a Sunnah and a means of peace and tranquility. 'And of His signs is that He created for you from yourselves mates that you may find tranquility in them; and He placed between you affection and mercy.' (30:21). Mutual respect and fulfilling rights are key.</p>"
+  },
+  {
+    "id": 32,
+    "title": "Caring for Orphans and the Elderly",
+    "category": "Ethics",
+    "excerpt": "The high status of those who look after the vulnerable in the community.",
+    "image": "https://images.unsplash.com/photo-1582239611684-25e167909b02?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>The Prophet ﷺ said: 'I and the person who sponsors an orphan will be together in Paradise like this,' and he pointed with his index and middle fingers. Showing kindness to the elderly is a sign of respect and maturity.</p>"
+  },
+  {
+    "id": 33,
+    "title": "The Great Virtues of Surah Al-Mulk",
+    "category": "Quran",
+    "excerpt": "The benefits of reciting the chapter that intercedes for its reader in the grave.",
+    "image": "https://images.unsplash.com/photo-1628108423403-12822a16d0c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Surah Al-Mulk (Chapter 67) is known as the protector from the punishment of the grave. The Prophet ﷺ said: 'There is a Surah in the Quran which contains thirty Ayat, which kept interceding for its reader until he was forgiven. That is Surah Al-Mulk.'</p>"
+  },
+  {
+    "id": 34,
+    "title": "Ghusl: The Major Ritual Purity",
+    "category": "Fatawa",
+    "excerpt": "When Ghusl is required and the correct method of performing the full ritual bath.",
+    "image": "https://images.unsplash.com/photo-1581024317826-b8c1879f935f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Ghusl is required after major impurity (e.g., intercourse, menstruation). The key is to ensure water reaches the entire body, beginning with the intention, washing the private parts, performing Wudu, and then pouring water over the head and body.</p>"
+  },
+  {
+    "id": 35,
+    "title": "The Story of Prophet Yusuf (Joseph) AS",
+    "category": "Stories",
+    "excerpt": "Lessons of patience, forgiveness, and trust in Allah's plan from the best of stories in the Quran.",
+    "image": "https://images.unsplash.com/photo-1579547621419-74d758999331?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Surah Yusuf is unique as it narrates the complete life story of a single Prophet. Key lessons include bearing hardship with Sabr, overcoming jealousy, resisting temptation, and the ultimate triumph of truth and Allah's decree.</p>"
+  },
+  {
+    "id": 36,
+    "title": "The Concept of Barakah (Divine Blessing)",
+    "category": "Spirituality",
+    "excerpt": "How to invite Barakah into your time, wealth, and family life.",
+    "image": "https://images.unsplash.com/photo-1594895646194-e4c194098c25?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Barakah is the increase of goodness and sustenance. It is attained through sincerity, honesty in dealings, waking up early, maintaining family ties, and relying on Allah (Tawakkul).</p>"
+  },
+  {
+    "id": 37,
+    "title": "The Rewards of Saying Alhamdulillah (Praise be to Allah)",
+    "category": "Dhikr",
+    "excerpt": "A simple phrase with profound theological and spiritual implications.",
+    "image": "https://images.unsplash.com/photo-1596773534241-118d3b80b278?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Alhamdulillah is an expression of gratitude and realization that all blessings come from Allah. The Prophet ﷺ said that 'Alhamdulillah' fills the balance (of good deeds) on the Day of Judgment. It is an acknowledgment of perfection.</p>"
+  },
+  {
+    "id": 38,
+    "title": "Understanding the Role of Angels (Mala'ikah)",
+    "category": "Aqeedah",
+    "excerpt": "Belief in the Angels: their creation, duties, and importance in the unseen world.",
+    "image": "https://images.unsplash.com/photo-1627916688588-e21c3275d319?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Angels are created from light and constantly obey Allah. Key angels include Jibreel (revelation), Mika'eel (rain), Israfil (trumpet), and Malak al-Mawt (death). Everyone has two recording angels (Kiraaman Katibeen) documenting deeds.</p>"
+  },
+  {
+    "id": 39,
+    "title": "The Etiquette of the Masjid (Mosque)",
+    "category": "Adab",
+    "excerpt": "Guidelines for behavior inside the House of Allah to maximize benefit and respect.",
+    "image": "https://images.unsplash.com/photo-1558908320-f404481c4e72?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>The Masjid is the purest place on earth. Enter with the right foot and the specific dua, offer Tahiyyatul Masjid (two rak'ats), avoid loud talk, and ensure cleanliness. Women also have a place of honor in the Masjid.</p>"
+  },
+  {
+    "id": 40,
+    "title": "The Importance of Moderation (Wasatiyyah)",
+    "category": "Ethics",
+    "excerpt": "Islam is the middle way: avoiding extremes in worship, social life, and belief.",
+    "image": "https://images.unsplash.com/photo-1590218751412-f02758110b80?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Allah describes the Muslim Ummah as a 'Just and Balanced Nation' (2:143). This calls for a balanced approach to religion and worldly life, avoiding excess zealotry and negligence.</p>"
+  },
+  {
+    "id": 41,
+    "title": "Ramadan: The Month of the Quran",
+    "category": "Ibadah",
+    "excerpt": "Maximizing your worship and connection with the Quran during the blessed month.",
+    "image": "https://images.unsplash.com/photo-1549557404-5f50f55e5898?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Ramadan is the month in which the Quran was revealed. Increase your recitation (Tilawah), contemplation (Tadabbur), and standing in prayer (Qiyam al-Layl) to gain maximum spiritual benefit. Break your fast with dates and water, following the Sunnah.</p>"
+  },
+  {
+    "id": 42,
+    "title": "The Virtue of Good Character (Akhlaq)",
+    "category": "Ethics",
+    "excerpt": "Good manners are the heaviest things in the scale on the Day of Judgment.",
+    "image": "https://images.unsplash.com/photo-1590218751412-f02758110b80?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>The Prophet ﷺ said: 'The most beloved of Allah's slaves to Allah are those with the best manners.' Treat others as you would love to be treated. Kindness, humility, and truthfulness are the hallmarks of a true believer.</p>"
+  },
+  {
+    "id": 43,
+    "title": "Tawakkul (Reliance on Allah): The True Strength",
+    "category": "Faith",
+    "excerpt": "Understanding the balance between taking means and completely trusting in Allah's plan.",
+    "image": "https://images.unsplash.com/photo-1587834789510-1c667a4e63f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Tawakkul is not passive waiting; it is working diligently while believing that the outcome is entirely in Allah's Hands. The Prophet ﷺ told a Bedouin to 'Tie your camel and put your trust in Allah.'</p>"
+  },
+  {
+    "id": 44,
+    "title": "The Benefits of Dhikr (Remembrance of Allah)",
+    "category": "Dhikr",
+    "excerpt": "The peace, light, and protection gained from constantly remembering Allah.",
+    "image": "https://images.unsplash.com/photo-1596773534241-118d3b80b278?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Dhikr polishes the heart and is one of the easiest ways to earn rewards. Reciting SubhanAllah, Alhamdulillah, Allahu Akbar, and La ilaha illallah is the best speech to Allah. It is a source of strength against Shaitan.</p>"
+  },
+  {
+    "id": 45,
+    "title": "Adab of Eating and Drinking",
+    "category": "Adab",
+    "excerpt": "The Prophetic etiquette for meals, from washing hands to thanking Allah.",
+    "image": "https://images.unsplash.com/photo-1606825227764-a7457d5e4b77?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Begin with Bismillah, eat with the right hand, eat from what is closest to you, and avoid overeating. End with Alhamdulillah, expressing gratitude for the provision. Eating together promotes Barakah.</p>"
+  },
+  {
+    "id": 46,
+    "title": "The Life and Lessons of Imam Abu Hanifah",
+    "category": "History",
+    "excerpt": "A brief look at the great scholar and founder of the Hanafi school of Fiqh.",
+    "image": "https://images.unsplash.com/photo-1532012195252-45e0d757d544?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Nu'man ibn Thabit, known as Abu Hanifah, was a Tabi'i (successor of the companions) and a brilliant jurist. His methodology emphasized logical deduction (Qiyas) and consensus (Ijma) in deriving rulings, forming one of the four major schools.</p>"
+  },
+  {
+    "id": 47,
+    "title": "Dealing with Anger in Islam",
+    "category": "Ethics",
+    "excerpt": "Prophetic advice and practical steps to control and suppress anger for Allah's sake.",
+    "image": "https://images.unsplash.com/photo-1581024317826-b8c1879f935f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>The Prophet ﷺ advised: 'If any of you becomes angry and he is standing, let him sit down so his anger will go away; if it does not go away, let him lie down.' Seeking refuge in Allah from Shaitan and silence are also effective measures.</p>"
+  },
+  {
+    "id": 48,
+    "title": "The Concept of Shirk (Polytheism)",
+    "category": "Aqeedah",
+    "excerpt": "The greatest sin in Islam: associating partners with Allah and how to avoid it.",
+    "image": "https://images.unsplash.com/photo-1559400276-857e0081d596?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Shirk is to direct any act of worship that belongs exclusively to Allah to other than Him. It can be major (associating a deity) or minor (Riya/showing off). Allah forgives all sins except Shirk if one dies upon it (4:48).</p>"
+  },
+  {
+    "id": 49,
+    "title": "Seeking Knowledge of the Names and Attributes of Allah (Asma ul Husna)",
+    "category": "Faith",
+    "excerpt": "A means of increasing love, fear, and hope by knowing Allah's Beautiful Names.",
+    "image": "https://images.unsplash.com/photo-1627916688588-e21c3275d319?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>The Prophet ﷺ said: 'Allah has ninety-nine names, i.e., one hundred minus one, and whoever knows them will go to Paradise.' Knowing the Names like Ar-Rahman (The Most Merciful) and Al-Ghafur (The Forgiving) deepens your relationship with your Creator.</p>"
+  },
+  {
+    "id": 50,
+    "title": "The Wisdom of Plural Marriage in Islam",
+    "category": "Fatawa",
+    "excerpt": "A balanced look at the permissibility and strict conditions of polygyny in Islamic law.",
+    "image": "https://images.unsplash.com/photo-1564639969248-18e0018d9620?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "fullContent": "<p>Plural marriage is permitted but strictly restricted to a maximum of four wives, with the overriding condition of absolute justice and equity between them. 'But if you fear that you will not be just, then [marry only] one.' (4:3) The primary intention is protection and welfare.</p>"
+  }
+],
+            duas: [
+                // MORNING & EVENING
+                { category: "Morning/Evening", title: "Sayyidul Istighfar", arabic: "اللَّهُمَّ أَنْتَ رَبِّي لا إِلَهَ إِلا أَنْتَ خَلَقْتَنِي وَأَنَا عَبْدُكَ...", translation: "O Allah, You are my Lord, there is no god but You. You created me and I am Your servant..." },
+                { category: "Morning/Evening", title: "Protection from Harm", arabic: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ...", translation: "In the Name of Allah with Whose Name there is protection against every kind of harm in the earth or in the heaven..." },
+                // PRAYER
+                { category: "Prayer", title: "Dua After Prayer", arabic: "أَسْتَغْفِرُ اللَّهَ (3x) اللَّهُمَّ أَنْتَ السَّلاَمُ وَمِنْكَ السَّلاَمُ...", translation: "I ask Allah for forgiveness. O Allah, You are the Flawless and from You comes peace..." },
+                // PROTECTION
+                { category: "Protection", title: "Entering Toilet", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ", translation: "O Allah, I seek refuge with You from all evil and wicked things." },
+                { category: "Protection", title: "Leaving House", arabic: "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ، لاَ حَوْلَ وَلاَ قُوَّةَ إِلاَّ بِاللَّهِ", translation: "In the name of Allah, I trust in Allah; there is no might and no power but in Allah." },
+                // DISTRESS
+                { category: "Distress", title: "For Anxiety", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ", translation: "O Allah, I seek refuge in You from anxiety and sorrow." },
+                { category: "Distress", title: "Prophet Yunus's Dua", arabic: "لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ", translation: "There is no deity except You; exalted are You. Indeed, I have been of the wrongdoers." },
+    // MORNING & EVENING
+    { category: "Morning/Evening", title: "Seeking Well-being in this Life and the Hereafter", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ، اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي دِينِي وَدُنْيَايَ وَأَهْلِي وَمَالِي...", translation: "O Allah, I ask You for forgiveness and well-being in this world and the Hereafter. O Allah, I ask You for forgiveness and well-being in my religion, my worldly affairs, my family, and my wealth..." },
+    { category: "Morning/Evening", title: "Reliance on Allah (3x)", arabic: "رَضِيتُ بِاللَّهِ رَبًّا، وَبِالْإِسْلَامِ دِينًا، وَبِمُحَمَّدٍ نَبِيًّا", translation: "I am pleased with Allah as my Lord, with Islam as my religion, and with Muhammad (peace and blessings of Allah be upon him) as my Prophet." },
+    { category: "Morning/Evening", title: "Declaration of Tauheed", arabic: "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ", translation: "None has the right to be worshipped except Allah, alone, without any partner. To Him belongs all sovereignty and praise, and He is over all things competent." },
+    
+    // PRAYER (SALAH)
+    { category: "Prayer", title: "Before Starting Prayer (Istiftaah)", arabic: "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، وَتَبَارَكَ اسْمُكَ، وَتَعَالَى جَدُّكَ، وَلَا إِلَهَ غَيْرُكَ", translation: "How perfect You are, O Allah, and I praise You. Blessed is Your Name, and Exalted is Your Majesty, and there is no god besides You." },
+    { category: "Prayer", title: "During Ruku (Bowing)", arabic: "سُبْحَانَ رَبِّيَ الْعَظِيمِ (3x)", translation: "How perfect is my Lord, the Magnificent." },
+    { category: "Prayer", title: "After Standing from Ruku", arabic: "رَبَّنَا وَلَكَ الْحَمْدُ حَمْدًا كَثِيرًا طَيِّبًا مُبَارَكًا فِيهِ", translation: "Our Lord, to You be all praise, abundant, excellent, and blessed praise." },
+    { category: "Prayer", title: "During Sujood (Prostration)", arabic: "سُبْحَانَ رَبِّيَ الْأَعْلَى (3x)", translation: "How perfect is my Lord, the Most High." },
+    
+    // PROTECTION
+    { category: "Protection", title: "Against Debts and Oppression", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَالْعَجْزِ وَالْكَسَلِ، وَالْجُبْنِ وَالْبُخْلِ، وَضَلَعِ الدَّيْنِ وَغَلَبَةِ الرِّجَالِ", translation: "O Allah, I seek refuge in You from anxiety and sorrow, weakness and laziness, miserliness and cowardice, the burden of debts and from being overpowered by men." },
+    { category: "Protection", title: "Upon Hearing a Dog Barking or Donkey Braying", arabic: "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ", translation: "I seek refuge in Allah from Satan, the expelled." },
+    
+    // DAILY LIFE
+    { category: "Daily Life", title: "Entering the Marketplace", arabic: "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، يُحْيِي وَيُمِيتُ وَهُوَ حَيٌّ لَا يَمُوتُ، بِيَدِهِ الْخَيْرُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ", translation: "None has the right to be worshipped except Allah, alone, without any partner. To Him belongs all sovereignty and praise. He gives life and causes death, and He is the Ever-Living and does not die. In His Hand is all good, and He is over all things competent." },
+    { category: "Daily Life", title: "Putting on a Garment", arabic: "بِسْمِ اللَّهِ", translation: "In the Name of Allah." },
+    { category: "Daily Life", title: "Dua for a New Dress", arabic: "اللَّهُمَّ لَكَ الْحَمْدُ أَنْتَ كَسَوْتَنِيهِ، أَسْأَلُكَ مِنْ خَيْرِهِ وَخَيْرِ مَا صُنِعَ لَهُ، وَأَعُوذُ بِكَ مِنْ شَرِّهِ وَشَرِّ مَا صُنِعَ لَهُ", translation: "O Allah, praise is to You. You have clothed me with it. I ask You for the good of it and the good of what it was made for, and I seek refuge with You from the evil of it and the evil of what it was made for." },
+    
+    // TRAVEL
+    { category: "Travel", title: "Dua for Traveling", arabic: "اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ. سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ...", translation: "Allah is the Greatest (3x). Glory be to the One Who has subjugated this for us, for we were not equal to it, and verily, to our Lord we are returning..." },
+    
+    // FOOD & DRINK
+    { category: "Food & Drink", title: "Dua After Eating", arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ", translation: "All praise is for Allah Who fed me this and provided it for me without any strength or power on my part." },
+    
+    // SICKNESS & GRIEF
+    { category: "Sickness & Grief", title: "Dua in Distress", arabic: "لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ", translation: "There is no god but You. Glory be to You! Indeed, I was among the wrongdoers." },
+    
+    // MORNING & EVENING (Additions)
+    { category: "Morning/Evening", title: "Purity of Nature and Islam", arabic: "أَصْبَحْنَا عَلَى فِطْرَةِ الإِسْلاَمِ، وَعَلَى كَلِمَةِ الإِخْلاَصِ، وَعَلَى دِينِ نَبِيِّنَا مُحَمَّدٍ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ، وَعَلَى مِلَّةِ أَبِينَا إِبْرَاهِيمَ حَنِيفًا مُسْلِمًا وَمَا كَانَ مِنَ الْمُشْرِكِينَ", translation: "We rise upon the fitrah (pure nature) of Islam, and upon the word of sincerity, and upon the religion of our Prophet Muhammad (peace be upon him), and upon the faith of our father Ibrahim, who was a Muslim and not of the polytheists." },
+    { category: "Morning/Evening", title: "Asking for Goodness of the Day/Night", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ هَذَا الْيَوْمِ فَتْحَهُ وَنَصْرَهُ وَنُورَهُ وَبَرَكَتَهُ وَهُدَاهُ، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِيهِ وَشَرِّ مَا بَعْدَهُ", translation: "O Allah, I ask You for the good of this day (or night), its opening, its victory, its light, its blessings, and its guidance, and I seek refuge in You from the evil in it and the evil that follows it." },
+    { category: "Morning/Evening", title: "Asking for Guidance and Protection", arabic: "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لِي شَأْنِي كُلَّهُ، وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ", translation: "O Ever-Living, O Sustainer! By Your Mercy I seek help. Rectify all of my affairs for me, and do not entrust me to my soul for the blink of an eye." },
+
+    // PRAYER (SALAH) (Additions)
+    { category: "Prayer", title: "Dua Between Two Prostrations", arabic: "رَبِّ اغْفِرْ لِي، وَارْحَمْنِي، وَاجْبُرْنِي، وَارْفَعْنِي، وَاهْدِنِي، وَعَافِنِي، وَارْزُقْنِي", translation: "My Lord, forgive me, have mercy upon me, strengthen me, raise my rank, guide me, grant me well-being, and provide for me." },
+    { category: "Prayer", title: "Tashahhud", arabic: "التَّحِيَّاتُ لِلَّهِ، وَالصَّلَوَاتُ، وَالطَّيِّبَاتُ. السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ...", translation: "All compliments, prayers, and good things are for Allah. Peace be upon you, O Prophet, and the mercy of Allah and His blessings..." },
+    { category: "Prayer", title: "Salat al-Ibrahimiyyah (Sending blessings)", arabic: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ...", translation: "O Allah, send prayers upon Muhammad and upon the family of Muhammad, just as You sent prayers upon Ibrahim and upon the family of Ibrahim. Indeed, You are Praiseworthy and Glorious..." },
+
+    // TRAVEL (Additions)
+    { category: "Travel", title: "When Returning from a Journey", arabic: "آيِبُونَ تَائِبُونَ عَابِدُونَ لِرَبِّنَا حَامِدُونَ", translation: "We are returning, repenting, worshipping, and praising our Lord." },
+    { category: "Travel", title: "When Stopping on a Journey", arabic: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ", translation: "I seek refuge in the perfect words of Allah from the evil of what He has created." },
+
+    // PROTECTION (Additions)
+    { category: "Protection", title: "Dua when Leaving the House (Detailed)", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ أَنْ أَضِلَّ أَوْ أُضَلَّ، أَوْ أَزِلَّ أَوْ أُزَلَّ، أَوْ أَظْلِمَ أَوْ أُظْلَمَ، أَوْ أَجْهَلَ أَوْ يُجْهَلَ عَلَيَّ", translation: "O Allah, I seek refuge with You from leading others astray or being led astray, from slipping or being caused to slip, from wronging others or being wronged, and from behaving foolishly or being treated foolishly." },
+    { category: "Protection", title: "Protection from Shirk (Association)", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ أَنْ أُشْرِكَ بِكَ وَأَنَا أَعْلَمُ، وَأَسْتَغْفِرُكَ لِمَا لَا أَعْلَمُ", translation: "O Allah, I seek refuge in You from associating anything with You while I know it, and I seek Your forgiveness for what I do not know." },
+
+    // DAILY LIFE (Additions)
+    { category: "Daily Life", title: "Dua for Entering the Home", arabic: "بِسْمِ اللَّهِ وَلَجْنَا، وَبِسْمِ اللَّهِ خَرَجْنَا، وَعَلَى رَبِّنَا تَوَكَّلْنَا", translation: "In the Name of Allah we enter, and in the Name of Allah we leave, and upon our Lord we rely." },
+    { category: "Daily Life", title: "Dua After Waking Up", arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ", translation: "All praise is for Allah Who gave us life after He took it from us, and to Him is the resurrection." },
+    { category: "Daily Life", title: "Dua Before Intercourse", arabic: "بِسْمِ اللَّهِ، اللَّهُمَّ جَنِّبْنَا الشَّيْطَانَ، وَجَنِّبِ الشَّيْطَانَ مَا رَزَقْتَنَا", translation: "In the Name of Allah. O Allah, keep the Shaytan away from us and keep the Shaytan away from what You grant us." },
+    { category: "Daily Life", title: "Dua for Sneezing (Response to one who sneezes)", arabic: "يَرْحَمُكَ اللَّهُ", translation: "May Allah have mercy upon you." },
+    { category: "Daily Life", title: "Dua for the one who Responds to Sneezing", arabic: "يَهْدِيكُمُ اللَّهُ وَيُصْلِحُ بَالَكُمْ", translation: "May Allah guide you and rectify your affairs." },
+
+    // SICKNESS & GRIEF (Additions)
+    { category: "Sickness & Grief", title: "Dua for Visiting the Sick (7 times)", arabic: "أَسْأَلُ اللَّهَ الْعَظِيمَ، رَبَّ الْعَرْشِ الْعَظِيمِ، أَنْ يَشْفِيَكَ", translation: "I ask Allah the Magnificent, the Lord of the Magnificent Throne, to cure you." },
+    { category: "Sickness & Grief", title: "Dua upon Death/Calamity", arabic: "إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ، اللَّهُمَّ أْجُرْنِي فِي مُصِيبَتِي، وَأَخْلِفْ لِي خَيْرًا مِنْهَا", translation: "To Allah we belong and to Him is our return. O Allah, reward me for my affliction and compensate me with something better than it." },
+    { category: "Sickness & Grief", title: "Dua for Severe Pain (Placing hand on painful area, 7 times)", arabic: "أَعُوذُ بِعِزَّةِ اللَّهِ وَقُدْرَتِهِ مِنْ شَرِّ مَا أَجِدُ وَأُحَاذِرُ", translation: "I seek refuge in the might of Allah and His power from the evil of what I find and of what I guard against." },
+
+    // FORGIVENESS & REPENTANCE
+    { category: "Forgiveness & Repentance", title: "A Short and Comprehensive Istighfar", arabic: "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ", translation: "My Lord, forgive me and accept my repentance, surely You are the One Who accepts repentance, the Most Merciful." },
+    { category: "Forgiveness & Repentance", title: "Dua of Yunus (Alayhi Salaam)", arabic: "لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ", translation: "There is no god but You. Glory be to You! Indeed, I was among the wrongdoers." },
+
+    // HAJJ & UMRAH
+    { category: "Hajj & Umrah", title: "Talbiyah", arabic: "لَبَّيْكَ اللَّهُمَّ لَبَّيْكَ، لَبَّيْكَ لَا شَرِيكَ لَكَ لَبَّيْكَ، إِنَّ الْحَمْدَ وَالنِّعْمَةَ لَكَ وَالْمُلْكَ، لَا شَرِيكَ لَكَ", translation: "I respond to Your call, O Allah, I respond to Your call. I respond to Your call, You have no partner, I respond to Your call. Indeed, all praise, grace, and sovereignty belong to You. You have no partner." },
+    { category: "Hajj & Umrah", title: "Between the Yemeni Corner and the Black Stone", arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", translation: "Our Lord, grant us good in this world and good in the Hereafter, and save us from the punishment of the Fire." },
+
+    // MARRIAGE & FAMILY
+    { category: "Marriage & Family", title: "Dua for a New Spouse", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَهَا وَخَيْرَ مَا جَبَلْتَهَا عَلَيْهِ، وَأَعُوذُ بِكَ مِنْ شَرِّهَا وَشَرِّ مَا جَبَلْتَهَا عَلَيْهِ", translation: "O Allah, I ask You for the good of her and the good nature You have created in her, and I seek refuge in You from the evil of her and the evil nature You have created in her." },
+    { category: "Marriage & Family", title: "Seeking Righteous Children", arabic: "رَبِّ هَبْ لِي مِن لَّدُنكَ ذُرِّيَّةً طَيِّبَةً إِنَّكَ سَمِيعُ الدُّعَاءِ", translation: "My Lord, grant me from Yourself a righteous offspring. Indeed, You are the Hearer of supplication." },
+    { category: "Marriage & Family", title: "Asking Allah for making one's spouse and children a comfort", arabic: "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا", translation: "Our Lord, grant us from among our wives and offspring comfort to our eyes and make us leaders of the righteous." },
+
+    // ISTIKHARAH (Guidance)
+    { category: "Istikharah (Guidance)", title: "Dua of Istikharah (Part 1)", arabic: "اللَّهُمَّ إِنِّي أَسْتَخِيرُكَ بِعِلْمِكَ، وَأَسْتَقْدِرُكَ بِقُدْرَتِكَ، وَأَسْأَلُكَ مِنْ فَضْلِكَ الْعَظِيمِ...", translation: "O Allah, I seek Your guidance through Your knowledge, and Your strength through Your power, and I ask You of Your great bounty..." },
+    
+    // JUSTICE & FEAR
+    { category: "Justice & Fear", title: "Dua Against an Opponent", arabic: "اللَّهُمَّ مُنْزِلَ الْكِتَابِ، سَرِيعَ الْحِسَابِ، اهْزِمِ الأَحْزَابَ، اللَّهُمَّ اهْزِمْهُمْ وَزَلْزِلْهُمْ", translation: "O Allah, Revealer of the Book, Swift at reckoning, defeat the allied forces. O Allah, defeat them and shake them." },
+    { category: "Justice & Fear", title: "Dua upon seeing a Person Afflicted", arabic: "الْحَمْدُ لِلَّهِ الَّذِي عَافَانِي مِمَّا ابْتَلَاكَ بِهِ، وَفَضَّلَنِي عَلَى كَثِيرٍ مِمَّنْ خَلَقَ تَفْضِيلًا", translation: "All praise is for Allah Who spared me from what He has afflicted you with and preferred me over much of what He has created." },
+    
+    // KNOWLEDGE & PROVISION
+    { category: "Knowledge & Provision", title: "Dua upon leaving the Masjid", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ", translation: "O Allah, I ask You from Your bounty." },
+    { category: "Knowledge & Provision", title: "Asking for Beneficial Knowledge and Pure Provision (After Fajr)", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلًا مُتَقَبَّلًا", translation: "O Allah, I ask You for beneficial knowledge, pure provision, and accepted deeds." },
+    { category: "Knowledge & Provision", title: "Seeking Abundance and Barakah", arabic: "اللَّهُمَّ أَكْثِرْ مَالِي وَوَلَدِي، وَبَارِكْ لِي فِيمَا أَعْطَيْتَنِي", translation: "O Allah, increase my wealth and children, and bless me in what You have given me." },
+
+    // FORGIVENESS & REPENTANCE (Additions)
+    { category: "Forgiveness & Repentance", title: "Seeking forgiveness after Wudu (Ablution)", arabic: "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا أَنْتَ أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ", translation: "How perfect You are, O Allah, and I praise You. I bear witness that there is no god but You. I seek Your forgiveness and repent to You." },
+    { category: "Forgiveness & Repentance", title: "Short Istighfar for Believers", arabic: "اللَّهُمَّ اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ", translation: "O Allah, forgive me, my parents, and the believing men and women." },
+    { category: "Forgiveness & Repentance", title: "Seeking Mercy and Forgiveness", arabic: "رَبِّ اغْفِرْ وَارْحَمْ وَأَنْتَ خَيْرُ الرَّاحِمِينَ", translation: "My Lord, forgive and have mercy, for You are the best of those who show mercy." },
+
+    // PRAYER (SALAH) (Additions)
+    { category: "Prayer", title: "Dua after Tasleem (Salam)", arabic: "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ", translation: "O Allah, help me to remember You, thank You, and worship You in the best possible way." },
+    { category: "Prayer", title: "Dua after Fajr/Maghrib (10x)", arabic: "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ", translation: "None has the right to be worshipped except Allah, alone, without any partner. To Him belongs all sovereignty and praise. He gives life and causes death, and He is over all things competent." },
+    { category: "Prayer", title: "Before Tasleem (Seeking Refuge)", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عَذَابِ الْقَبْرِ، وَمِنْ عَذَابِ النَّارِ، وَمِنْ فِتْنَةِ الْمَحْيَا وَالْمَمَاتِ، وَمِنْ فِتْنَةِ الْمَسِيحِ الدَّجَّالِ", translation: "O Allah, I seek refuge with You from the punishment of the grave, and from the punishment of the Fire, and from the trials of life and death, and from the trial of the False Messiah (Dajjal)." },
+
+    // DAILY LIFE (Additions)
+    { category: "Daily Life", title: "Dua upon Entering the Masjid", arabic: "بِسْمِ اللَّهِ وَالصَّلاَةُ وَالسَّلاَمُ عَلَى رَسُولِ اللَّهِ، اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ", translation: "In the Name of Allah, and peace and blessings be upon the Messenger of Allah. O Allah, open the gates of Your mercy for me." },
+    { category: "Daily Life", title: "Dua upon Leaving the Masjid (Detailed)", arabic: "بِسْمِ اللَّهِ وَالصَّلاَةُ وَالسَّلاَمُ عَلَى رَسُولِ اللَّهِ، اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ، اللَّهُمَّ اعْصِمْنِي مِنَ الشَّيْطَانِ الرَّجِيمِ", translation: "In the Name of Allah, and peace and blessings be upon the Messenger of Allah. O Allah, I ask You from Your bounty. O Allah, protect me from the accursed Shaytan." },
+    { category: "Daily Life", title: "Dua upon Hearing the Adhan (Call to Prayer)", arabic: "اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ وَالصَّلاَةِ الْقَائِمَةِ، آتِ مُحَمَّدًا الْوَسِيلَةَ وَالْفَضِيلَةَ، وَابْعَثْهُ مَقَامًا مَحْمُودًا الَّذِي وَعَدْتَهُ", translation: "O Allah, Lord of this perfect call and established prayer, grant Muhammad Al-Wasilah (a station in Paradise) and Al-Fadhilah (highest rank), and raise him to the praised station which You have promised him." },
+    { category: "Daily Life", title: "Dua before sleeping (Short)", arabic: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا", translation: "In Your Name, O Allah, I die and I live." },
+    { category: "Daily Life", title: "Dua for when the Wind Blows", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَهَا وَأَعُوذُ بِكَ مِنْ شَرِّهَا", translation: "O Allah, I ask You for its good, and I seek refuge in You from its evil." },
+    { category: "Daily Life", title: "Dua upon Seeing the New Crescent Moon", arabic: "اللَّهُمَّ أَهْلِلْهُ عَلَيْنَا بِالْيُمْنِ وَالإِيمَانِ وَالسَّلاَمَةِ وَالإِسْلاَمِ رَبِّي وَرَبُّكَ اللَّهُ", translation: "O Allah, let this crescent appear on us with security and faith, with safety and Islam. My Lord and your Lord is Allah." },
+    { category: "Daily Life", title: "Dua when you are Pleased or Displeased with the Qada (Decree)", arabic: "الْحَمْدُ لِلَّهِ عَلَى كُلِّ حَالٍ", translation: "All praise is due to Allah in every circumstance." },
+
+    // FOOD & DRINK (Additions)
+    { category: "Food & Drink", title: "Dua before Eating when forgetting to say Bismillah", arabic: "بِسْمِ اللَّهِ فِي أَوَّلِهِ وَآخِرِهِ", translation: "In the Name of Allah, in its beginning and its end." },
+    { category: "Food & Drink", title: "Dua after Drinking Water/Milk", arabic: "اللَّهُمَّ بَارِكْ لَنَا فِيهِ وَزِدْنَا مِنْهُ", translation: "O Allah, bless it for us and give us more of it." },
+    { category: "Food & Drink", title: "Dua when Hosting Guests", arabic: "اللَّهُمَّ أَطْعِمْ مَنْ أَطْعَمَنِي وَاسْقِ مَنْ سَقَانِي", translation: "O Allah, feed him who fed me, and give drink to him who gave me to drink." },
+
+    // SICKNESS & GRIEF (Additions)
+    { category: "Sickness & Grief", title: "Dua when in extreme Distress", arabic: "اللَّهُ اللَّهُ رَبِّي لَا أُشْرِكُ بِهِ شَيْئًا", translation: "Allah, Allah, my Lord, I do not associate anything with Him." },
+    { category: "Sickness & Grief", title: "Dua to Remove Distress (Karb)", arabic: "لَا إِلَهَ إِلَّا اللَّهُ الْعَظِيمُ الْحَلِيمُ، لَا إِلَهَ إِلَّا اللَّهُ رَبُّ الْعَرْشِ الْعَظِيمِ، لَا إِلَهَ إِلَّا اللَّهُ رَبُّ السَّمَاوَاتِ وَرَبُّ الْأَرْضِ وَرَبُّ الْعَرْشِ الْكَرِيمِ", translation: "There is no god but Allah, the Magnificent, the Forbearing. There is no god but Allah, the Lord of the Magnificent Throne. There is no god but Allah, the Lord of the heavens and the earth, and the Lord of the Noble Throne." },
+    
+    // JUSTICE & FEAR (Additions)
+    { category: "Justice & Fear", title: "Dua when afraid of people", arabic: "اللَّهُمَّ اكْفِنِيهِمْ بِمَا شِئْتَ", translation: "O Allah, suffice me against them with whatever You wish." },
+    { category: "Justice & Fear", title: "Dua when faced with a difficult decision", arabic: "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ", translation: "Allah is sufficient for us, and He is the best Disposer of affairs." },
+    
+    // KNOWLEDGE & PROVISION (Additions)
+    { category: "Knowledge & Provision", title: "Dua for seeking Increase in Knowledge", arabic: "رَبِّ زِدْنِي عِلْمًا", translation: "My Lord, increase me in knowledge." },
+    { category: "Knowledge & Provision", title: "Seeking sufficiency from the Forbidden", arabic: "اللَّهُمَّ اكْفِنِي بِحَلَالِكَ عَنْ حَرَامِكَ وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ", translation: "O Allah, suffice me with Your lawful provision instead of Your forbidden provision, and make me independent of all others besides You by Your Grace." },
+    
+    // HAJJ & UMRAH (Additions)
+    { category: "Hajj & Umrah", title: "Dua upon Ascending Mount Safa and Marwah", arabic: "اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ، أَنْجَزَ وَعْدَهُ، وَنَصَرَ عَبْدَهُ، وَهَزَمَ الأَحْزَابَ وَحْدَهُ", translation: "Allah is the Greatest (3x). There is no god but Allah, alone, without any partner. To Him belongs all sovereignty and praise, and He is over all things competent. There is no god but Allah, alone. He fulfilled His promise, granted victory to His servant, and defeated the allied forces, alone." },
+    
+    // MISCELLANEOUS (Praise and Blessings)
+    { category: "Praise & Blessings", title: "Sending Blessings on the Prophet (peace be upon him)", arabic: "اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ", translation: "O Allah, send prayers and peace upon our Prophet Muhammad." },
+    { category: "Praise & Blessings", title: "General Praise and Asking for Paradise", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ، وَأَعُوذُ بِكَ مِنَ النَّارِ", translation: "O Allah, I ask You for Paradise, and I seek refuge in You from the Fire." },
+    { category: "Praise & Blessings", title: "The Best of Duas (General)", arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", translation: "Our Lord, grant us good in this world and good in the Hereafter, and save us from the punishment of the Fire." },
+    { category: "Praise & Blessings", title: "Asking for Steadfastness", arabic: "يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ", translation: "O Turner of the hearts, keep my heart firm on Your religion." },
+    { category: "Praise & Blessings", title: "Asking for Piety and Purity", arabic: "اللَّهُمَّ آتِ نَفْسِي تَقْوَاهَا، وَزَكِّهَا أَنْتَ خَيْرُ مَنْ زَكَّاهَا، أَنْتَ وَلِيُّهَا وَمَوْلَاهَا", translation: "O Allah, grant my soul its piety, and purify it, for You are the best of those who purify it. You are its Guardian and Master." },
+    { category: "Praise & Blessings", title: "Seeking Sincere Intention", arabic: "اللَّهُمَّ اجْعَلْ عَمَلَنَا كُلَّهُ صَالِحًا، وَاجْعَلْهُ لِوَجْهِكَ خَالِصًا، وَلَا تَجْعَلْ لِأَحَدٍ فِيهِ شَيْئًا", translation: "O Allah, make all our deeds righteous, and make them sincerely for Your Face, and do not let anyone have a share in them." }              
+]
+        };
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderContent();
+            checkTheme();
+        });
+
+        // --- NAVIGATION LOGIC ---
+        function navigate(viewName) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById(`view-${viewName}`);
+            if (target) {
+                target.classList.remove('hidden');
+                window.scrollTo(0,0);
+            }
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        // --- THEME LOGIC ---
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        }
+
+        function checkTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const icon = document.getElementById('theme-icon');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        }
+
+        // --- RENDER CONTENT ---
+        function renderContent() {
+            // Render Quran
+            document.getElementById('quran-container').innerHTML = siteData.quran.map(surah => `
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border dark:border-gray-700 hover:border-primary transition duration-300">
+                    <div class="flex justify-between items-center border-b dark:border-gray-700 pb-4 mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold shadow-sm">${surah.id}</div>
+                            <div>
+                                <h3 class="font-bold text-lg leading-none">${surah.englishName}</h3>
+                                <p class="text-xs text-gray-500 mt-1">${surah.meaning} • ${surah.type} • ${surah.verses} Verses</p>
+                            </div>
+                        </div>
+                        <button onclick="playAudio('${surah.audioUrl}', '${surah.englishName}')" class="text-primary hover:text-emerald-700 bg-primary/5 p-2 rounded-full transition" title="Play Recitation">
+                            <i class="fas fa-play text-lg"></i>
+                        </button>
+                    </div>
+                    <div class="text-right mb-4">
+                        <p class="font-arabic text-2xl leading-loose text-gray-800 dark:text-gray-100">${surah.text}</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-lg">
+                        <p class="text-gray-600 dark:text-gray-400 text-sm italic">"${surah.translation}"</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Hadith (Initial load: All)
+            filterHadith('all');
+
+            // Render Articles
+            document.getElementById('articles-container').innerHTML = siteData.articles.map(art => `
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition group flex flex-col h-full cursor-pointer" onclick="openArticle(${art.id})">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="${art.image}" alt="${art.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded">${art.category}</div>
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="font-bold text-xl mb-2 group-hover:text-primary transition">${art.title}</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3 flex-grow">${art.excerpt}</p>
+                        <span class="text-primary font-semibold text-sm hover:underline mt-auto self-start flex items-center gap-1">Read Article <i class="fas fa-arrow-right text-xs"></i></span>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Names of Allah
+            document.getElementById('names-container').innerHTML = siteData.namesOfAllah.map(name => `
+                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow text-center border dark:border-gray-700 hover:border-primary transition group">
+                    <h3 class="font-arabic text-3xl mb-1 text-primary group-hover:scale-110 transition duration-300">${name.arabic}</h3>
+                    <p class="font-bold text-gray-800 dark:text-gray-200">${name.english}</p>
+                    <p class="text-xs text-gray-500">${name.meaning}</p>
+                </div>
+            `).join('');
+
+            // Render History
+            document.getElementById('history-container').innerHTML = siteData.history.map(item => `
+                <div class="relative group">
+                    <div class="absolute -left-[41px] bg-primary h-5 w-5 rounded-full border-4 border-white dark:border-gray-900 group-hover:scale-125 transition z-10"></div>
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition ml-2">
+                        <span class="text-primary font-bold text-xs bg-green-100 dark:bg-green-900 px-2 py-1 rounded inline-block mb-2">${item.year}</span>
+                        <h3 class="text-xl font-bold mt-1 text-gray-800 dark:text-gray-100">${item.title}</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mt-2 text-sm">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Duas (Initial)
+            filterDuas('all');
+        }
+
+        // --- FILTER FUNCTIONS ---
+        function filterHadith(source) {
+            const container = document.getElementById('hadith-container');
+            const filtered = source === 'all' ? siteData.hadith : siteData.hadith.filter(h => h.source === source);
+            
+            container.innerHTML = filtered.map(h => `
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border-l-4 border-gold hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                    <div class="flex justify-between mb-3 items-center">
+                        <span class="text-xs font-bold text-white bg-gold px-2 py-1 rounded">${h.source}</span>
+                        <span class="text-xs text-gray-500 uppercase tracking-wide font-semibold">${h.topic}</span>
+                    </div>
+                    <p class="font-arabic text-xl text-right mb-4 text-gray-800 dark:text-gray-200 leading-loose">${h.arabic}</p>
+                    <p class="text-gray-700 dark:text-gray-300 text-sm mb-2">"${h.translation}"</p>
+                    <p class="text-xs text-gray-400 italic text-right">Reference: ${h.ref}</p>
+                </div>
+            `).join('');
+
+            if (filtered.length === 0) container.innerHTML = `<p class="text-gray-500 text-center py-4">No Hadiths found for this category.</p>`;
+        }
+
+        function filterDuas(category) {
+            const container = document.getElementById('duas-container');
+            const filtered = category === 'all' ? siteData.duas : siteData.duas.filter(d => d.category === category);
+            
+            container.innerHTML = filtered.map(d => `
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 text-center border border-gray-100 dark:border-gray-700 hover:border-primary transition duration-300">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">${d.category}</span>
+                        <div class="flex space-x-2">
+                             <button class="text-gray-300 hover:text-red-500 transition"><i class="far fa-heart"></i></button>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-4 text-primary">${d.title}</h3>
+                    <p class="font-arabic text-2xl mb-4 leading-loose text-gray-800 dark:text-gray-200">${d.arabic}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 italic">"${d.translation}"</p>
+                </div>
+            `).join('');
+        }
+
+        // --- MODAL & AUDIO LOGIC (Identical to previous version) ---
+        function openArticle(id) {
+            const article = siteData.articles.find(a => a.id === id);
+            if (!article) return;
+            document.getElementById('modal-title').textContent = article.title;
+            document.getElementById('modal-image').src = article.image;
+            document.getElementById('modal-body').innerHTML = article.fullContent;
+            toggleModal();
+        }
+
+        function toggleModal() {
+            const body = document.querySelector('body');
+            const modal = document.getElementById('article-modal');
+            modal.classList.toggle('opacity-0');
+            modal.classList.toggle('pointer-events-none');
+            body.classList.toggle('modal-active');
+        }
+
+        function playAudio(url, title) {
+            const audioEl = document.getElementById('quran-audio');
+            const bar = document.getElementById('audio-bar');
+            document.getElementById('now-playing-title').textContent = "Reciting: " + title;
+            bar.classList.remove('hidden');
+            audioEl.src = url;
+            audioEl.play();
+        }
+
+        function closeAudio() {
+            const audioEl = document.getElementById('quran-audio');
+            audioEl.pause();
+            document.getElementById('audio-bar').classList.add('hidden');
+        }
+
+        // --- SEARCH LOGIC (Updated for Names) ---
+        function toggleSearch() {
+            const overlay = document.getElementById('search-overlay');
+            overlay.classList.toggle('hidden');
+            if(!overlay.classList.contains('hidden')) document.getElementById('global-search').focus();
+        }
+
+        function performSearch() {
+            const query = document.getElementById('global-search').value.toLowerCase();
+            const resultsContainer = document.getElementById('search-results-container');
+            if(query.trim() === "") return;
+
+            let resultsHTML = "";
+            let count = 0;
+
+            // Search Names
+            siteData.namesOfAllah.forEach(item => {
+                if(item.english.toLowerCase().includes(query) || item.meaning.toLowerCase().includes(query)) {
+                    resultsHTML += `<div class="p-4 bg-white dark:bg-gray-800 rounded shadow border-l-4 border-primary" onclick="navigate('names')"><span class="text-primary font-bold">99 Names:</span> ${item.english} - ${item.meaning}</div>`;
+                    count++;
+                }
+            });
+
+            // Search Quran
+            siteData.quran.forEach(item => {
+                if(item.englishName.toLowerCase().includes(query) || item.translation.toLowerCase().includes(query)) {
+                    resultsHTML += `<div class="p-4 bg-white dark:bg-gray-800 rounded shadow border-l-4 border-green-500 cursor-pointer" onclick="navigate('quran')"><span class="font-bold text-green-500">Quran:</span> ${item.englishName}</div>`;
+                    count++;
+                }
+            });
+
+            // Search Hadith
+            siteData.hadith.forEach(item => {
+                if(item.translation.toLowerCase().includes(query) || item.topic.toLowerCase().includes(query)) {
+                    resultsHTML += `<div class="p-4 bg-white dark:bg-gray-800 rounded shadow border-l-4 border-gold cursor-pointer" onclick="navigate('hadith')"><span class="font-bold text-gold">Hadith:</span> ${item.topic}</div>`;
+                    count++;
+                }
+            });
+
+            if(count === 0) resultsHTML = "<p class='text-center text-gray-500'>No results found.</p>";
+            resultsContainer.innerHTML = resultsHTML;
+            toggleSearch();
+            navigate('search');
+        }
+        
+        document.querySelector('.modal-overlay').addEventListener('click', toggleModal);
+    </script>
+</body>
+</html>
