@@ -1354,6 +1354,14 @@
                 }
             });
 
+            // Search Names
+            siteData.history.forEach(item => {
+                if(item.english.toLowerCase().includes(query) || item.meaning.toLowerCase().includes(query)) {
+                    resultsHTML += `<div class="p-4 bg-white dark:bg-gray-800 rounded shadow border-l-4 border-primary" onclick="navigate('names')"><span class="text-primary font-bold">99 Names:</span> ${item.english} - ${item.meaning}</div>`;
+                    count++;
+                }
+            });
+            
             // Search Quran
             siteData.quran.forEach(item => {
                 if(item.englishName.toLowerCase().includes(query) || item.translation.toLowerCase().includes(query)) {
@@ -1409,6 +1417,7 @@
 
 
 </html>
+
 
 
 
