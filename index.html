@@ -1379,13 +1379,36 @@
         document.querySelector('.modal-overlay').addEventListener('click', toggleModal);
     </script>
 </body>
- <footer style="text-align:center; color:white; font-size:10px; padding:20px 0;">
-    <p>© Al-Huda 2025 - All rights reserved.</p>
+ <footer class="theme-footer">
+    <p>&copy; 2025 - All rights reserved.</p>
     <p>Made with ❤️ from Pakistan.</p>
     <p>Note: All the information available here is correct, but if there is any mistake or error, feel free to contact us at the email below!</p>
     <p>graphics.vyronix@gmail.com</p>
 </footer>
 
+<style>
+    .theme-footer {
+        text-align: center;
+        font-size: 10px;
+        padding: 20px 0;
+        transition: color 0.3s ease, background 0.3s ease;
+    }
+
+    /* Light Mode */
+    body.light-mode .theme-footer {
+        color: #000;          /* Black text */
+        background: #f9f9f9;  /* Very light background */
+    }
+
+    /* Dark Mode */
+    body.dark-mode .theme-footer {
+        color: #fff;          /* White text */
+        background: #111;     /* Dark background */
+    }
+</style>
+
+
 </html>
+
 
 
