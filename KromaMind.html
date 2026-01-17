@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KromaMind | Professional Color Meaning Engine</title>
+    <!-- Tailwind CSS for rapid structural styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        :root {
+            --bg-color: #030617;
+            --accent-color: #FF8201;
+            --accent-hover: #e67500;
+            --text-color: #FFFFFF;
+            --card-bg: #0f172a;
+            --border-color: #1e293b;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .accent-bg { background-color: var(--accent-color); }
+        .accent-text { color: var(--accent-color); }
+        .accent-border { border-color: var(--accent-color); }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(255, 130, 1, 0.4);
+        }
+
+        .color-bubble {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s;
+        }
+
+        .color-bubble:hover {
+            transform: scale(1.2);
+            border-color: white;
+        }
+
+        .color-bubble.active {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade { animation: fadeIn 0.4s ease-out forwards; }
+
+        /* AI Suggestion Pulse */
+        .ai-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 130, 1, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 130, 1, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 130, 1, 0); }
+        }
+
+        /* Blindness Sim Filters */
+        .protanopia { filter: url('#protanopia-filter'); }
+        .deuteranopia { filter: url('#deuteranopia-filter'); }
+        .tritanopia { filter: url('#tritanopia-filter'); }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Accessibility Filters SVG -->
+    <svg style="display: none;">
+        <filter id="protanopia-filter"><feColorMatrix values="0.567,0.433,0,0,0 0.558,0.442,0,0,0 0,0.242,0.758,0,0 0,0,0,1,0"/></filter>
+        <filter id="deuteranopia-filter"><feColorMatrix values="0.625,0.375,0,0,0 0.7,0.3,0,0,0 0,0.3,0.7,0,0 0,0,0,1,0"/></filter>
+        <filter id="tritanopia-filter"><feColorMatrix values="0.95,0.05,0,0,0 0,0.433,0.567,0,0 0,0.475,0.525,0,0 0,0,0,1,0"/></filter>
+    </svg>
+
+    <!-- Navigation Header -->
+    <header class="border-b border-slate-800 py-4 px-6 sticky top-0 bg-[#030617]/90 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 accent-bg rounded-lg flex items-center justify-center">
+                    <i data-lucide="palette" class="text-white w-5 h-5"></i>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight">Kroma<span class="accent-text">Mind</span></h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="exportReport()" class="btn-primary">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    Export Presentation
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Sidebar: Input & AI Tools -->
+        <aside class="lg:col-span-4 space-y-6">
+            <section class="glass-card p-6 space-y-4">
+                <h2 class="flex items-center gap-2 font-semibold text-lg">
+                    <i data-lucide="eyedropper" class="accent-text w-5 h-5"></i>
+                    Color Selection
+                </h2>
+                <div class="space-y-3">
+                    <label class="text-sm text-slate-400">Primary Color</label>
+                    <div class="flex gap-4 items-center">
+                        <input type="color" id="mainColorPicker" value="#FF8201" class="w-16 h-16 rounded cursor-pointer bg-transparent border-none">
+                        <input type="text" id="hexInput" value="#FF8201" class="flex-1 bg-slate-900 border border-slate-700 rounded px-4 py-2 focus:accent-border outline-none uppercase font-mono">
+                    </div>
+                </div>
+                
+                <div class="pt-4 border-t border-slate-800">
+                    <label class="text-sm text-slate-400 block mb-3">Palette Context</label>
+                    <select id="industrySelect" class="w-full bg-slate-900 border border-slate-700 rounded px-4 py-2 focus:accent-border outline-none">
+                        <option value="luxury">Luxury & Premium</option>
+                        <option value="tech" selected>Tech & Innovation</option>
+                        <option value="fashion">Fashion & Lifestyle</option>
+                        <option value="gaming">Gaming & Entertainment</option>
+                        <option value="health">Health & Wellness</option>
+                    </select>
+                </div>
+
+                <button id="aiSuggestBtn" class="w-full mt-4 py-3 bg-indigo-600/20 border border-indigo-500/50 rounded-lg text-indigo-300 font-medium hover:bg-indigo-600/30 transition flex items-center justify-center gap-2 ai-pulse">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    AI Mood Suggestion
+                </button>
+            </section>
+
+            <!-- Quick Palette View -->
+            <section class="glass-card p-6">
+                <h3 class="font-semibold mb-4 text-sm uppercase tracking-wider text-slate-400">Current Palette Analysis</h3>
+                <div id="paletteStrip" class="flex h-12 rounded-lg overflow-hidden shadow-2xl mb-4">
+                    <!-- Dynamic Palette Segments -->
+                </div>
+                <div id="accessibilityCheck" class="space-y-2">
+                    <!-- Contrast Results -->
+                </div>
+            </section>
+        </aside>
+
+        <!-- Main Workspace -->
+        <div class="lg:col-span-8 space-y-8" id="captureArea">
+            
+            <!-- Psychology & Cultural Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Psychology Card -->
+                <div class="glass-card p-6 relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold mb-1">Psychology Mapping</h3>
+                            <p class="text-sm text-slate-400">Emotional & Subconscious Response</p>
+                        </div>
+                        <i data-lucide="brain-circuit" class="accent-text w-8 h-8 opacity-50"></i>
+                    </div>
+                    
+                    <div id="psychologyContent" class="space-y-4">
+                        <div class="flex flex-wrap gap-2" id="emotionalTags">
+                            <!-- Tags populated by JS -->
+                        </div>
+                        <div class="p-4 bg-slate-900/50 rounded-lg border-l-4 accent-border" id="meaningDescription">
+                            <!-- Dynamic text -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cultural Awareness Card -->
+                <div class="glass-card p-6">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold mb-1">Global Context</h3>
+                            <p class="text-sm text-slate-400">Cultural & Regional Interpretations</p>
+                        </div>
+                        <i data-lucide="globe-2" class="accent-text w-8 h-8 opacity-50"></i>
+                    </div>
+                    
+                    <div id="culturalList" class="space-y-3">
+                        <!-- Populated by JS -->
+                    </div>
+                    
+                    <div id="sensitivityAlert" class="mt-4 hidden p-3 bg-red-900/20 border border-red-500/50 rounded-lg flex items-center gap-3">
+                        <i data-lucide="alert-triangle" class="text-red-500 w-5 h-5"></i>
+                        <span class="text-xs text-red-200">Sensitive use in Middle Eastern/African contexts.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Heatmap / Visual Analysis -->
+            <div class="glass-card p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold">Emotional Intensity Profile</h3>
+                    <div class="flex gap-2">
+                        <span class="px-2 py-1 text-xs rounded bg-slate-800">Neutral</span>
+                        <span class="px-2 py-1 text-xs rounded accent-bg">High Intensity</span>
+                    </div>
+                </div>
+                <div class="h-64">
+                    <canvas id="intensityChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Live UI Preview -->
+            <div class="glass-card p-6">
+                <h3 class="text-xl font-bold mb-6">Live UI Simulation</h3>
+                <div class="p-8 rounded-xl bg-slate-900 border border-slate-800 transition-all duration-500" id="uiSimulator">
+                    <div class="max-w-md mx-auto space-y-6">
+                        <div class="space-y-2">
+                            <div class="h-4 w-2/3 bg-slate-800 rounded"></div>
+                            <div class="h-10 w-full bg-slate-800 rounded"></div>
+                        </div>
+                        <div class="flex justify-center">
+                            <button id="simButton" class="px-8 py-3 rounded-full font-bold transition-transform active:scale-95">Action CTA</button>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-1 h-32 rounded-xl" id="simCard1"></div>
+                            <div class="flex-1 h-32 rounded-xl" id="simCard2"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Simulation Controls -->
+                <div class="mt-6 flex flex-wrap gap-4 items-center border-t border-slate-800 pt-6">
+                    <span class="text-sm text-slate-400">Simulate Vision:</span>
+                    <select id="visionSim" class="bg-slate-800 border-none text-xs rounded px-3 py-1 outline-none">
+                        <option value="normal">Standard Vision</option>
+                        <option value="protanopia">Protanopia (Red Blind)</option>
+                        <option value="deuteranopia">Deuteranopia (Green Blind)</option>
+                        <option value="tritanopia">Tritanopia (Blue Blind)</option>
+                    </select>
+                    
+                    <div class="flex-1"></div>
+                    
+                    <button id="lightModeToggle" class="p-2 hover:bg-slate-800 rounded-lg" title="Toggle Surface Lighting">
+                        <i data-lucide="sun" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal for Reports/AI -->
+    <div id="modalOverlay" class="fixed inset-0 bg-black/80 hidden z-[100] flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 max-w-lg w-full rounded-2xl p-8 shadow-2xl relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-500 hover:text-white">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Database of Color Meanings (Simplified for Demo Logic)
+        const colorDatabase = {
+            'red': {
+                emotional: ['Passion', 'Urgency', 'Danger', 'Excitement', 'Power'],
+                description: "Red is physically stimulating. It increases heart rate and creates a sense of urgency. Often used for clearance sales and food industries to stimulate appetite.",
+                cultural: [
+                    { region: 'Western', mean: 'Energy, Love, Action' },
+                    { region: 'Eastern', mean: 'Prosperity, Good Luck, Joy' },
+                    { region: 'Middle East', mean: 'Danger, Caution' },
+                    { region: 'South Asia', mean: 'Purity, Marriage, Fertility' }
+                ],
+                industries: {
+                    luxury: 'Bold Statement, Passionate Elite',
+                    tech: 'Critical Alert, High Speed',
+                    fashion: 'Attention Grabbing, Confidence'
+                },
+                intensity: [85, 90, 70, 95, 60] // [Excitement, Urgency, Luxury, Passion, Calm]
+            },
+            'blue': {
+                emotional: ['Trust', 'Serenity', 'Professionalism', 'Logic', 'Depth'],
+                description: "Blue is the color of the mind. It's essentially soothing; it affects us mentally, rather than the physical reaction we have to red. Strong blues will stimulate clear thought.",
+                cultural: [
+                    { region: 'Western', mean: 'Security, Authority, Calm' },
+                    { region: 'Eastern', mean: 'Immortality, Strength' },
+                    { region: 'Middle East', mean: 'Protection, Spirituality' },
+                    { region: 'African', mean: 'Harmony, Peace, Love' }
+                ],
+                industries: {
+                    luxury: 'Timeless Quality, Heritage',
+                    tech: 'Reliability, Innovation, Security',
+                    fashion: 'Sophistication, Effortless'
+                },
+                intensity: [40, 30, 80, 50, 95]
+            },
+            'orange': {
+                emotional: ['Creativity', 'Affordability', 'Youth', 'Energy', 'Optimism'],
+                description: "Orange combines the energy of red and the happiness of yellow. It is associated with joy, sunshine, and the tropics. It represents enthusiasm, fascination, and happiness.",
+                cultural: [
+                    { region: 'Western', mean: 'Playful, Inexpensive' },
+                    { region: 'Eastern', mean: 'Courage, Love, Sacrifice' },
+                    { region: 'Middle East', mean: 'Mourning, Loss' },
+                    { region: 'South Asia', mean: 'Sacred, Fire, Purity' }
+                ],
+                industries: {
+                    luxury: 'Adventurous, Modern Avant-garde',
+                    tech: 'User-Friendly, Creative Tools',
+                    fashion: 'Vibrant, Seasonal Energy'
+                },
+                intensity: [90, 70, 40, 85, 30]
+            }
+        };
+
+        // State Management
+        let currentHex = "#FF8201";
+        let intensityChart = null;
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initChart();
+            setupEventListeners();
+            analyzeColor(currentHex);
+        });
+
+        function setupEventListeners() {
+            const picker = document.getElementById('mainColorPicker');
+            const hexInput = document.getElementById('hexInput');
+            const industry = document.getElementById('industrySelect');
+            const vision = document.getElementById('visionSim');
+
+            picker.addEventListener('input', (e) => {
+                updateColor(e.target.value);
+            });
+
+            hexInput.addEventListener('change', (e) => {
+                let val = e.target.value;
+                if(!val.startsWith('#')) val = '#' + val;
+                if(/^#[0-9A-F]{6}$/i.test(val)) {
+                    updateColor(val);
+                }
+            });
+
+            industry.addEventListener('change', () => analyzeColor(currentHex));
+
+            vision.addEventListener('change', (e) => {
+                const sim = e.target.value;
+                const target = document.getElementById('uiSimulator');
+                target.className = 'p-8 rounded-xl bg-slate-900 border border-slate-800 transition-all duration-500 ' + (sim !== 'normal' ? sim : '');
+            });
+
+            document.getElementById('aiSuggestBtn').addEventListener('click', runAISuggestion);
+        }
+
+        function updateColor(hex) {
+            currentHex = hex;
+            document.getElementById('mainColorPicker').value = hex;
+            document.getElementById('hexInput').value = hex;
+            analyzeColor(hex);
+        }
+
+        function analyzeColor(hex) {
+            // Get nearest base color category (Red, Blue, Orange etc)
+            const rgb = hexToRgb(hex);
+            const base = getBaseColorName(rgb);
+            const data = colorDatabase[base] || colorDatabase['orange']; // Fallback
+            const industry = document.getElementById('industrySelect').value;
+
+            // Update UI
+            updatePsychology(data, industry);
+            updateCultural(data);
+            updatePaletteStrip(hex);
+            updateSimulator(hex);
+            updateChart(data.intensity);
+            checkContrast(hex);
+            
+            // Toggle alerts
+            const sensitivity = document.getElementById('sensitivityAlert');
+            if(base === 'orange') {
+                sensitivity.classList.remove('hidden');
+                sensitivity.querySelector('span').innerText = "Orange is used for mourning in some Middle Eastern contexts.";
+            } else {
+                sensitivity.classList.add('hidden');
+            }
+        }
+
+        function updatePsychology(data, industry) {
+            const tags = document.getElementById('emotionalTags');
+            tags.innerHTML = data.emotional.map(t => `<span class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 border border-slate-700">${t}</span>`).join('');
+            
+            document.getElementById('meaningDescription').innerHTML = `
+                <p class="text-sm leading-relaxed">${data.description}</p>
+                <div class="mt-4 pt-4 border-t border-slate-800">
+                    <span class="text-[10px] uppercase font-bold text-slate-500">Industry View (${industry})</span>
+                    <p class="text-xs mt-1 accent-text italic">${data.industries[industry]}</p>
+                </div>
+            `;
+        }
+
+        function updateCultural(data) {
+            const list = document.getElementById('culturalList');
+            list.innerHTML = data.cultural.map(c => `
+                <div class="flex items-center justify-between text-sm p-2 rounded hover:bg-slate-800/50">
+                    <span class="text-slate-400">${c.region}</span>
+                    <span class="font-medium">${c.mean}</span>
+                </div>
+            `).join('');
+        }
+
+        function updatePaletteStrip(hex) {
+            const strip = document.getElementById('paletteStrip');
+            const shades = generateShades(hex);
+            strip.innerHTML = shades.map(s => `<div style="background-color: ${s}; flex: 1" title="${s}"></div>`).join('');
+        }
+
+        function updateSimulator(hex) {
+            const btn = document.getElementById('simButton');
+            const card1 = document.getElementById('simCard1');
+            const card2 = document.getElementById('simCard2');
+            
+            btn.style.backgroundColor = hex;
+            btn.style.color = getContrastYIQ(hex);
+            card1.style.backgroundColor = adjustBrightness(hex, -20);
+            card2.style.backgroundColor = adjustBrightness(hex, 40);
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('intensityChart').getContext('2d');
+            intensityChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Excitement', 'Urgency', 'Luxury', 'Passion', 'Calm'],
+                    datasets: [{
+                        label: 'Emotional Intensity',
+                        data: [0,0,0,0,0],
+                        backgroundColor: 'rgba(255, 130, 1, 0.2)',
+                        borderColor: '#FF8201',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#FF8201'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { display: false },
+                            grid: { color: '#1e293b' },
+                            angleLines: { color: '#1e293b' },
+                            pointLabels: { color: '#94a3b8', font: { size: 10 } }
+                        }
+                    },
+                    plugins: { legend: { display: false } },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        function updateChart(vals) {
+            intensityChart.data.datasets[0].data = vals;
+            intensityChart.update();
+        }
+
+        function checkContrast(hex) {
+            const rgb = hexToRgb(hex);
+            const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+            const status = document.getElementById('accessibilityCheck');
+            
+            const ratio = brightness > 125 ? 'High Contrast' : 'Low Contrast';
+            const color = brightness > 125 ? 'text-green-400' : 'text-amber-400';
+            
+            status.innerHTML = `
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-500">Text Readability</span>
+                    <span class="${color} font-bold">${ratio}</span>
+                </div>
+            `;
+        }
+
+        // AI Feature Simulation
+        function runAISuggestion() {
+            const modal = document.getElementById('modalOverlay');
+            const content = document.getElementById('modalContent');
+            modal.classList.remove('hidden');
+            
+            content.innerHTML = `
+                <div class="text-center space-y-4">
+                    <div class="w-16 h-16 bg-indigo-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="brain" class="text-indigo-400 w-8 h-8"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">AI Palette Recommendation</h2>
+                    <p class="text-slate-400 text-sm">Based on your "Tech" context, I suggest balancing your primary accent with high-stability neutrals.</p>
+                    
+                    <div class="grid grid-cols-4 gap-2 my-6">
+                        <div class="h-12 rounded bg-[#FF8201]"></div>
+                        <div class="h-12 rounded bg-[#1e293b]"></div>
+                        <div class="h-12 rounded bg-[#0f172a]"></div>
+                        <div class="h-12 rounded bg-[#64748b]"></div>
+                    </div>
+
+                    <button onclick="applyAI()" class="btn-primary w-full justify-center">Apply Suggestion</button>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function applyAI() {
+            updateColor("#FF8201");
+            closeModal();
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.add('hidden');
+        }
+
+        async function exportReport() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            const element = document.getElementById('captureArea');
+            
+            const btn = document.querySelector('.btn-primary');
+            btn.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4 animate-spin"></i> Generating...`;
+            lucide.createIcons();
+
+            try {
+                const canvas = await html2canvas(element, {
+                    backgroundColor: '#030617',
+                    scale: 2
+                });
+                const imgData = canvas.toDataURL('image/png');
+                const imgProps = doc.getImageProperties(imgData);
+                const pdfWidth = doc.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                
+                doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                doc.save(`KromaMind-Report-${currentHex}.pdf`);
+            } catch (err) {
+                console.error("Export failed", err);
+            } finally {
+                btn.innerHTML = `<i data-lucide="download" class="w-4 h-4"></i> Export Presentation`;
+                lucide.createIcons();
+            }
+        }
+
+        // Helper Functions
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        function getBaseColorName(rgb) {
+            // Simplified logic: determine which channel is dominant
+            if (rgb.r > 200 && rgb.g < 100 && rgb.b < 100) return 'red';
+            if (rgb.b > 200 && rgb.r < 150) return 'blue';
+            if (rgb.r > 200 && rgb.g > 100 && rgb.b < 100) return 'orange';
+            return 'orange'; // Default to orange for demo
+        }
+
+        function generateShades(hex) {
+            return [
+                adjustBrightness(hex, -40),
+                adjustBrightness(hex, -20),
+                hex,
+                adjustBrightness(hex, 20),
+                adjustBrightness(hex, 40)
+            ];
+        }
+
+        function adjustBrightness(hex, percent) {
+            const rgb = hexToRgb(hex);
+            const r = Math.min(255, Math.max(0, rgb.r + (rgb.r * (percent / 100))));
+            const g = Math.min(255, Math.max(0, rgb.g + (rgb.g * (percent / 100))));
+            const b = Math.min(255, Math.max(0, rgb.b + (rgb.b * (percent / 100))));
+            return `#${Math.round(r).toString(16).padStart(2, '0')}${Math.round(g).toString(16).padStart(2, '0')}${Math.round(b).toString(16).padStart(2, '0')}`;
+        }
+
+        function getContrastYIQ(hexcolor){
+            const rgb = hexToRgb(hexcolor);
+            const yiq = ((rgb.r*299)+(rgb.g*587)+(rgb.b*114))/1000;
+            return (yiq >= 128) ? 'black' : 'white';
+        }
+    </script>
+</body>
+</html>
